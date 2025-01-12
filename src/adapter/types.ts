@@ -7,7 +7,7 @@ export interface FunctionReturn {
     readonly data: string;
 }
 
-export interface FanctionOptions {
+export interface FunctionOptions {
     readonly getProvider: (chainId: ChainId) => PublicClient;
     readonly signTransactions: (props: SignTransactionProps) => Promise<TransactionReturn>;
     readonly notify: (message: string) => Promise<any>;
@@ -15,6 +15,6 @@ export interface FanctionOptions {
 
 export interface AdapterExport {
     readonly tools: AiTool[];
-    readonly functions: Record<string, (args: any, options: FanctionOptions) => PromiseLike<FunctionReturn>>;
+    readonly functions: Record<string, (args: any, options: FunctionOptions) => PromiseLike<FunctionReturn>>;
     readonly description: string;
 }
