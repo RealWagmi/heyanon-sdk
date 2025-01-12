@@ -1,0 +1,2 @@
+export const NATIVE_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+export const DEAD_ADDRESS = '0x000000000000000000000000000000000000dEaD';
