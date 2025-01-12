@@ -1,25 +1,21 @@
-import { Address, erc20Abi, encodeFunctionData } from 'viem';
-import { TransactionParams, ChainId } from '../../blockchain';
-import { FunctionOptions } from '../../adapter';
+import { Address, erc20Abi, encodeFunctionData, PublicClient } from 'viem';
+import { TransactionParams } from '../../blockchain';
 
 interface Props {
     readonly args: {
-        readonly chainId: ChainId;
         readonly account: Address;
         readonly target: Address;
         readonly spender: Address;
         readonly amount: bigint;
     }
-    readonly getProvider: FunctionOptions['getProvider'];
+    readonly provider: PublicClient;
     readonly transactions: TransactionParams[];
 }
 
-export async function checkToApprove({ args, getProvider, transactions }: Props ): Promise<void> {
-    const { chainId, account, target, spender, amount } = args;
+export async function checkToApprove({ args, transactions, provider }: Props ): Promise<void> {
+    const { account, target, spender, amount } = args;
 
-    const publicClient = getProvider(chainId);
-
-    const allowance = await publicClient.readContract({
+    const allowance = await provider.readContract({
         address: target,
         abi: erc20Abi,
         functionName: 'allowance',
