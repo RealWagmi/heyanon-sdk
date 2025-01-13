@@ -1,5 +1,5 @@
 import { AiTool } from '../ai';
-import { ChainId, SignTransactionProps, TransactionReturn } from '../blockchain';
+import { ChainId, SendTransactionProps, TransactionReturn } from '../blockchain';
 import { PublicClient } from 'viem';
 
 export interface FunctionReturn {
@@ -9,7 +9,7 @@ export interface FunctionReturn {
 
 export interface FunctionOptions {
     readonly getProvider: (chainId: ChainId) => PublicClient;
-    readonly signTransactions: (props: SignTransactionProps) => Promise<TransactionReturn>;
+    readonly sendTransactions: (props: SendTransactionProps) => Promise<TransactionReturn>;
     readonly notify: (message: string) => Promise<any>;
 }
 

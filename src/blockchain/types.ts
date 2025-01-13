@@ -17,7 +17,7 @@ export interface TransactionReturn {
     readonly data: TransactionReturnData[];
 }
 
-export interface SignTransactionProps {
+export interface SendTransactionProps {
     readonly chainId: number;
     readonly account: Address;
     readonly transactions: TransactionParams[];
