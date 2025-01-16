@@ -16,6 +16,8 @@ export enum ChainId {
     ONE_SEPOLIA = 421_614,
     SCROLL = 534_352,
     SEPOLIA = 11_155_111,
+    STARKNET = 234_485_942_919_683_34, // SN_MAIN
+    STARKNET_SEPOLIA = 393_402_133_0259_977_980_009_61 // SN_SEPOLIA
 }
 
 export const allChainIds = Object.values(ChainId).filter(value => typeof value === 'number');
