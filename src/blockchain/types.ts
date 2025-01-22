@@ -1,4 +1,7 @@
+import { PublicKey, Transaction, TransactionSignature } from '@solana/web3.js';
 import { Address, Hex } from 'viem';
+
+export type Account = Address | PublicKey;
 
 export interface TransactionParams {
     readonly target: Address;
@@ -14,11 +17,11 @@ export interface TransactionReturnData {
 
 export interface TransactionReturn {
     readonly isMultisig: boolean;
-    readonly data: TransactionReturnData[];
+    readonly data: TransactionReturnData[] | TransactionSignature;
 }
 
 export interface SendTransactionProps {
     readonly chainId: number;
-    readonly account: Address;
-    readonly transactions: TransactionParams[];
+    readonly account: Account;
+    readonly transactions: TransactionParams[] | Transaction;
 }

@@ -1,6 +1,7 @@
 import { AiTool } from '../ai';
 import { ChainId, SendTransactionProps, TransactionReturn } from '../blockchain';
 import { PublicClient } from 'viem';
+import { Connection } from '@solana/web3.js';
 
 export interface FunctionReturn {
     readonly success: boolean;
@@ -8,7 +9,7 @@ export interface FunctionReturn {
 }
 
 export interface FunctionOptions {
-    readonly getProvider: (chainId: ChainId) => PublicClient;
+    readonly getProvider: (chainId: ChainId) => PublicClient | Connection;
     readonly sendTransactions: (props: SendTransactionProps) => Promise<TransactionReturn>;
     readonly notify: (message: string) => Promise<any>;
 }
