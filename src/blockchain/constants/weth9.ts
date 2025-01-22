@@ -21,4 +21,4 @@ export const WETH9 = {
     [ChainId.ONE_SEPOLIA]: new Token(ChainId.ONE_SEPOLIA, '0x980B62Da83eFf3D4576C647993b0c1D7faf17c73', 18, 'WETH', 'Wrapped Ether'),
     [ChainId.SCROLL]: new Token(ChainId.SCROLL, '0x5300000000000000000000000000000000000004', 18, 'WETH', 'Wrapped Ether'),
     [ChainId.GNOSIS]: new Token(ChainId.GNOSIS, '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d', 18, 'WXDAI', 'Wrapped XDAI'),
-} satisfies Record<ChainId, Token>;
+} satisfies Partial<Record<ChainId, Token>>;
