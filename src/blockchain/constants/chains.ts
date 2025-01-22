@@ -16,6 +16,7 @@ export enum ChainId {
     ONE_SEPOLIA = 421_614,
     SCROLL = 534_352,
     SEPOLIA = 11_155_111,
+    SOLANA = 0,
 }
 
 export const allChainIds = Object.values(ChainId).filter(value => typeof value === 'number');

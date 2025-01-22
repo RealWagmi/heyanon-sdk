@@ -18,6 +18,7 @@ export const chainNames: Record<ChainId, string> = {
     [ChainId.GNOSIS]: 'gnosis',
     [ChainId.SCROLL]: 'scroll',
     [ChainId.ONE_SEPOLIA]: 'one-sepolia',
+    [ChainId.SOLANA]: 'solana',
 };
 
 export const allChainNames = Object.values(chainNames);
