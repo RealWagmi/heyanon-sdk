@@ -6,7 +6,7 @@ describe('getWrappedNative', () => {
     for (const chainId of allChainIds) {
         it(`should return the correct token for chainId ${chainId}`, () => {
             const token = getWrappedNative(chainId);
-            expect(token).toBe(WETH9[chainId]);
+            expect(token).toBe(WETH9[chainId as keyof typeof WETH9]);
         });
     }
 
