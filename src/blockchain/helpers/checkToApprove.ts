@@ -7,12 +7,12 @@ interface Props {
         readonly target: Address;
         readonly spender: Address;
         readonly amount: bigint;
-    }
+    };
     readonly provider: PublicClient;
     readonly transactions: TransactionParams[];
 }
 
-export async function checkToApprove({ args, transactions, provider }: Props ): Promise<void> {
+export async function checkToApprove({ args, transactions, provider }: Props): Promise<void> {
     const { account, target, spender, amount } = args;
 
     const allowance = await provider.readContract({
