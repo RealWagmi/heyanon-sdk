@@ -6,6 +6,7 @@ import { TransactionParams } from '../../blockchain';
 describe('checkToApprove', () => {
     const mockProvider = {
         readContract: vi.fn(),
+        chain: { id: 1 },
     } as any;
 
     const account = zeroAddress;
@@ -41,5 +42,18 @@ describe('checkToApprove', () => {
             target,
             data: expect.any(String),
         });
+    });
+
+    it('should add a zero allowance transaction', async () => {
+        mockProvider.readContract.mockResolvedValue(BigInt(500));
+        const transactions: TransactionParams[] = [];
+
+        await checkToApprove({
+            args: { account, target: '0xdAC17F958D2ee523a2206206994597C13D831ec7', spender, amount },
+            provider: mockProvider,
+            transactions,
+        });
+
+        expect(transactions).toHaveLength(2);
     });
 });
