@@ -1,10 +1,9 @@
-import { Address, erc20Abi, encodeFunctionData, PublicClient } from 'viem';
-import { TransactionParams } from '../../blockchain';
-import { ChainId } from '../constants/chains';
+import { Address, erc20Abi, encodeFunctionData, PublicClient, getAddress } from 'viem';
+import { TransactionParams } from '../types';
 
-const ZERO_ALLOWANCE = [
-    { chainId: ChainId.ETHEREUM, address: '0xdAC17F958D2ee523a2206206994597C13D831ec7' }
-] satisfies { chainId: ChainId, address: Address}[]
+const ZERO_ALLOWANCE: Record<number, Address[]> = {
+    1: ['0xdAC17F958D2ee523a2206206994597C13D831ec7'],
+};
 
 interface Props {
     readonly args: {
@@ -27,7 +26,12 @@ export async function checkToApprove({ args, transactions, provider }: Props): P
         args: [account, spender],
     });
 
-    if(ZERO_ALLOWANCE.some(({ chainId, address }) => chainId === provider.chain?.id && address.toLowerCase() === target.toLowerCase())) {
+    let chainId = provider.chain?.id;
+    if (!chainId) {
+        chainId = await provider.getChainId();
+    }
+
+    if (ZERO_ALLOWANCE[chainId]?.includes(getAddress(target))) {
         if (allowance < amount && allowance > 0n) {
             transactions.push({
                 target,

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { checkToApprove } from './checkToApprove';
 import { zeroAddress } from 'viem';
-import { TransactionParams } from '../../blockchain';
+import { TransactionParams } from '../types';
 
 describe('checkToApprove', () => {
     const mockProvider = {
