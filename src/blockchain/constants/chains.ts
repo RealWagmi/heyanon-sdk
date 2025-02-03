@@ -5,7 +5,6 @@ export enum Chain {
     GNOSIS = 'gnosis',
     POLYGON = 'polygon',
     SONIC = 'sonic',
-    FANTOM = 'fantom',
     ZKSYNC = 'zksync',
     METIS = 'metis',
     KAVA_EVM = 'kava_evm',

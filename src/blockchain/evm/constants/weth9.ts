@@ -1,5 +1,5 @@
 import { Chain, EvmChain } from '../../constants';
-import { arbitrumTokens, avalancheTokens, baseTokens, bscTokens, ethereumTokens, fantomTokens, iotaTokens, kavaTokens, metisTokens, optimismTokens, polygonTokens, sonicTokens, Token, zkSyncTokens } from '@real-wagmi/sdk';
+import { arbitrumTokens, avalancheTokens, baseTokens, bscTokens, ethereumTokens, iotaTokens, kavaTokens, metisTokens, optimismTokens, polygonTokens, sonicTokens, Token, zkSyncTokens } from '@real-wagmi/sdk';
 /**
  * Known WETH9 implementation addresses, used in our implementation of Ether#wrapped
  */
@@ -8,7 +8,6 @@ export const WETH9 = {
     [Chain.OPTIMISM]: optimismTokens.weth,
     [Chain.BSC]: bscTokens.wbnb,
     [Chain.POLYGON]: polygonTokens.wmatic,
-    [Chain.FANTOM]: fantomTokens.wftm,
     [Chain.ZKSYNC]: zkSyncTokens.weth,
     [Chain.KAVA_EVM]: kavaTokens.wkava,
     [Chain.AVALANCHE]: avalancheTokens.wavax,

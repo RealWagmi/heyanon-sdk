@@ -7,7 +7,6 @@ export const ChainIds = {
     [Chain.GNOSIS]: 100,
     [Chain.POLYGON]: 137,
     [Chain.SONIC]: 146,
-    [Chain.FANTOM]: 250,
     [Chain.ZKSYNC]: 324,
     [Chain.METIS]: 1088,
     [Chain.KAVA_EVM]: 2222,
