@@ -2,6 +2,7 @@ import { AiTool } from '../ai';
 import { EVM, Solana } from '../blockchain';
 import { Hex, PublicClient, SignMessageReturnType, SignTypedDataParameters as ViemSignTypedDataParameters, SignTypedDataReturnType, Address } from 'viem';
 import { Connection, PublicKey } from '@solana/web3.js';
+import { AdapterTag } from './misc';
 
 export interface FunctionReturn {
     readonly success: boolean;
@@ -35,4 +36,5 @@ export interface AdapterExport {
     readonly tools: AiTool[];
     readonly functions: Record<string, (args: any, options: FunctionOptions) => Promise<FunctionReturn>>;
     readonly description: string;
+    readonly tags?: AdapterTag[];
 }
