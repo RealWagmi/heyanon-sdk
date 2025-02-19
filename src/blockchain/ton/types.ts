@@ -17,9 +17,9 @@ export interface SendTransactionProps {
 }
 
 export interface Sender {
-	hash: string;
-	readonly address: string;
-	send(args: SenderArguments): Promise<void>;
+    hash: string;
+    readonly address: string;
+    send(args: SenderArguments): Promise<void>;
 }
 
 export interface TonClient {
