@@ -14,9 +14,10 @@ export enum Chain {
     ARBITRUM = 'arbitrum',
     SCROLL = 'scroll',
     SOLANA = 'solana',
+    TON = 'ton',
 }
 
-export type EvmChain = Exclude<Chain, Chain.SOLANA>;
+export type EvmChain = Exclude<Chain, Chain.SOLANA | Chain.TON>;
 
 export const allChains = Object.values(Chain);
-export const allEvmChains = Object.values(Chain).filter(chain => chain !== Chain.SOLANA);
+export const allEvmChains = Object.values(Chain).filter(chain => chain !== Chain.SOLANA && chain !== Chain.TON);
