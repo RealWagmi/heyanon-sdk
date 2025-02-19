@@ -4,4 +4,5 @@ export enum AdapterTag {
     LENDING = 'Lending',
     FARM = 'Farm',
     PERPETUALS = 'Perpetuals',
+    BRIDGE = 'Bridge',
 }
