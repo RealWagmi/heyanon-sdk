@@ -1,6 +1,6 @@
 {
   "name": "@heyanon/sdk",
-  "version": "2.0.4",
+  "version": "2.1.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -43,6 +43,10 @@
   "dependencies": {
     "@real-wagmi/sdk": "^1.4.5",
     "@solana/web3.js": "^1.98.0",
+    "@ton-api/client": "^0.3.1",
+    "@ton-api/ton-adapter": "0.3.0",
+    "@ton/core": "^0.60.0",
+    "@ton/ton": "^15.2.0",
     "viem": "^2.22.7",
     "vitest": "^2.1.8"
   }
