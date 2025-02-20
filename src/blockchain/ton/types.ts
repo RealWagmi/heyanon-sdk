@@ -21,9 +21,3 @@ export interface Client {
     readonly api: TonApiClient;
     readonly adapter: ContractAdapter;
 }
-
-export enum WalletType {
-    V3R2 = 'v3r2',
-    V4 = 'v4',
-    V5R1 = 'v5r1',
-} 
