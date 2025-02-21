@@ -1,7 +1,7 @@
 import { SenderArguments } from '@ton/core';
 import { TonApiClient } from '@ton-api/client';
 import { ContractAdapter } from '@ton-api/ton-adapter';
-import { Address } from '@ton/ton';
+import { Address, TonClient, TonClient4 } from '@ton/ton';
 
 export interface TransactionReturnData {
     readonly message: string;
@@ -19,5 +19,7 @@ export interface SendTransactionProps {
 
 export interface Client {
     readonly api: TonApiClient;
+    readonly client: TonClient;
+    readonly client4: TonClient4;
     readonly adapter: ContractAdapter;
 }
