@@ -6,4 +6,7 @@ export enum AdapterTag {
     PERPETUALS = 'Perpetuals',
     BRIDGE = 'Bridge',
     LIMIT_ORDER = 'Limit orders',
+    DEX = 'DEX',
+    LP = 'LP',
+    GAMES = 'Games',
 }
