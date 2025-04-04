@@ -1,5 +1,5 @@
 import { AiTool } from '../ai';
-import { EVM, Solana, TON, WalletType } from '../blockchain';
+import { EVM, Solana, TON, WalletType, Chain } from '../blockchain';
 import { Hex, PublicClient, SignMessageReturnType, SignTypedDataParameters as ViemSignTypedDataParameters, SignTypedDataReturnType } from 'viem';
 import { Connection, PublicKey, Transaction as SolanaTransaction, VersionedTransaction as SolanaVersionedTransaction } from '@solana/web3.js';
 import { AdapterTag } from './misc';
@@ -32,12 +32,21 @@ export interface TonFunctionOptions {
     readonly sendTransactions: (props: TON.types.SendTransactionProps) => Promise<TON.types.TransactionReturn>;
 }
 
+export interface UserToken {
+    readonly chain: Chain;
+    readonly name: string;
+    readonly symbol: string;
+    readonly address: string;
+    readonly decimals: number;
+}
+
 export interface FunctionOptions {
     readonly evm: EvmFunctionOptions;
     readonly solana: SolanaFunctionOptions;
     readonly ton: TonFunctionOptions;
     readonly notify: (message: string) => Promise<void>;
     readonly getRecipient: (type: WalletType) => Promise<string>;
+    readonly getUserTokens: () => Promise<UserToken[]>;
 }
 
 export interface AdapterExport {
