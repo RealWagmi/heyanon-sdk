@@ -23,7 +23,7 @@ export interface SolanaFunctionOptions {
     readonly getConnection: () => Connection;
     readonly getPublicKey: () => Promise<PublicKey>;
     readonly sendTransactions: (props: Solana.types.SendTransactionProps) => Promise<Solana.types.TransactionReturn>;
-    readonly signTransactions?: (transactions: Solana.types.SignTransactionProps[]) => Promise<(SolanaTransaction | SolanaVersionedTransaction)[]>
+    readonly signTransactions?: (transactions: Solana.types.SignTransactionProps[]) => Promise<(SolanaTransaction | SolanaVersionedTransaction)[]>;
 }
 
 export interface TonFunctionOptions {
