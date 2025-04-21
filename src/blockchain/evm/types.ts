@@ -23,9 +23,14 @@ export interface SendTransactionProps {
     readonly transactions: TransactionParams[];
 }
 
-export interface DeployContractProps {
-    readonly chainId: number;
+export interface ContractProps {
     readonly abi: Abi | unknown[];
     readonly bytecode: Hex;
     readonly args?: unknown[];
+}
+
+export interface DeployContractProps {
+    readonly chainId: number;
+    readonly account: Address;
+    readonly contracts: ContractProps[];
 }
