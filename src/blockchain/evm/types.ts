@@ -1,4 +1,4 @@
-import { Address, Hex } from 'viem';
+import { Abi, Address, Hex } from 'viem';
 
 export interface TransactionParams {
     readonly target: Address;
@@ -21,4 +21,11 @@ export interface SendTransactionProps {
     readonly chainId: number;
     readonly account: Address;
     readonly transactions: TransactionParams[];
+}
+
+export interface DeployContractProps {
+    readonly chainId: number;
+    readonly abi: Abi | unknown[];
+    readonly bytecode: Hex;
+    readonly args?: unknown[];
 }

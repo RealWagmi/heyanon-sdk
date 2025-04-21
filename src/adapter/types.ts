@@ -1,9 +1,10 @@
 import { AiTool } from '../ai';
 import { EVM, Solana, TON, WalletType, Chain } from '../blockchain';
-import { Hex, PublicClient, SignMessageReturnType, SignTypedDataParameters as ViemSignTypedDataParameters, SignTypedDataReturnType } from 'viem';
+import { Hex, PublicClient, SignMessageReturnType, SignTypedDataParameters as ViemSignTypedDataParameters, SignTypedDataReturnType, Address } from 'viem';
 import { Connection, PublicKey, Transaction as SolanaTransaction, VersionedTransaction as SolanaVersionedTransaction } from '@solana/web3.js';
 import { AdapterTag } from './misc';
 import { Address as TonAddress } from '@ton/ton';
+import { DeployContractProps } from '../blockchain/evm/types';
 
 export interface FunctionReturn {
     readonly success: boolean;
@@ -15,6 +16,7 @@ type SignTypedDataParameters = Omit<ViemSignTypedDataParameters, 'account'>;
 export interface EvmFunctionOptions {
     readonly getProvider: (chainId: number) => PublicClient;
     readonly sendTransactions: (props: EVM.types.SendTransactionProps) => Promise<EVM.types.TransactionReturn>;
+    readonly deployContracts: (props: DeployContractProps[]) => Promise<Address[]>;
     readonly signMessages?: (messages: Hex[]) => Promise<SignMessageReturnType[]>;
     readonly signTypedDatas?: (args: SignTypedDataParameters[]) => Promise<SignTypedDataReturnType[]>;
 }
