@@ -24,9 +24,9 @@ export interface SendTransactionProps {
 }
 
 export interface ContractProps {
-    readonly abi: Abi | unknown[];
+    readonly abi: Abi | any[];
     readonly bytecode: Hex;
-    readonly args?: unknown[];
+    readonly args?: any[];
 }
 
 export interface DeployContractProps {
