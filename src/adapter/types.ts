@@ -46,7 +46,7 @@ export interface FunctionOptions {
     readonly evm: EvmFunctionOptions;
     readonly solana: SolanaFunctionOptions;
     readonly ton: TonFunctionOptions;
-    readonly notify: (message: string) => Promise<void>;
+    readonly notify: (message: string, type?: 'alert' | 'regular') => Promise<void>;
     readonly getRecipient: (type: WalletType) => Promise<string>;
     readonly getUserTokens: () => Promise<UserToken[]>;
 }
