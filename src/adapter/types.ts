@@ -5,6 +5,7 @@ import { Connection, PublicKey, Transaction as SolanaTransaction, VersionedTrans
 import { AdapterTag } from './misc';
 import { Address as TonAddress } from '@ton/ton';
 import { DeployContractProps } from '../blockchain/evm/types';
+import { Exchange, exchanges } from 'ccxt';
 
 export interface FunctionReturn {
     readonly success: boolean;
@@ -49,6 +50,7 @@ export interface FunctionOptions {
     readonly notify: (message: string, type?: 'alert' | 'regular') => Promise<void>;
     readonly getRecipient: (type: WalletType) => Promise<string>;
     readonly getUserTokens: () => Promise<UserToken[]>;
+    readonly getCcxtExchange: (name: keyof typeof exchanges) => Promise<Exchange>;
 }
 
 export interface AdapterExport {

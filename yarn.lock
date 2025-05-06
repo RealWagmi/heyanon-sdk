@@ -1710,7 +1710,7 @@
   dependencies:
     buffer "~6.0.3"
 
-"@solana/web3.js@^1.98.0":
+"@solana/web3.js@1.98.0":
   version "1.98.0"
   resolved "https://registry.yarnpkg.com/@solana/web3.js/-/web3.js-1.98.0.tgz#21ecfe8198c10831df6f0cfde7f68370d0405917"
   integrity sha512-nz3Q5OeyGFpFCR+erX2f6JPt3sKhzhYcSycBCSPkWjzSVDh/Rr1FqTVMRe58FKO16/ivTUcuJjeS5MyBvpkbzA==
@@ -1738,7 +1738,7 @@
   dependencies:
     tslib "^2.8.0"
 
-"@ton-api/client@^0.3.1":
+"@ton-api/client@0.3.1":
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/@ton-api/client/-/client-0.3.1.tgz#23cf860e59df52f72221ad8051e0e123b3864893"
   integrity sha512-QwKcYcX9vaudJK7E7Gfx87A/TU1LgAUrNGdW6OZVKvKxttoUQUtEtRqLk3xqyuhQK24IYAd6BQ6Ki33X7zSdaw==
@@ -1750,17 +1750,17 @@
   resolved "https://registry.yarnpkg.com/@ton-api/ton-adapter/-/ton-adapter-0.3.0.tgz#d9e7ae932085ae8d84b8328f2196f2b1312a9238"
   integrity sha512-axR7MiViOays+10GSjyvGQHexf3qermN7dFjQVtIXbF2Aj5gC1CnIHh4xbSUJVGn0JsrH8tOO027dO73wJnSXw==
 
-"@ton/core@^0.60.0":
-  version "0.60.1"
-  resolved "https://registry.yarnpkg.com/@ton/core/-/core-0.60.1.tgz#cc9a62fb308d7597b1217dc8e44c7e2dcc0aceaa"
-  integrity sha512-8FwybYbfkk57C3l9gvnlRhRBHbLYmeu0LbB1z9N+dhDz0Z+FJW8w0TJlks8CgHrAFxsT3FlR2LsqFnsauMp38w==
+"@ton/core@0.60.0":
+  version "0.60.0"
+  resolved "https://registry.yarnpkg.com/@ton/core/-/core-0.60.0.tgz#7968d6a53b63c81149b5b4c91725518bc88a2f87"
+  integrity sha512-vK0itrieVashNQ7geqpvlWcOyXsXKKtIo6h02HcVcMeNo+QxovBaDAvou3BUKDnf7ej6+rRSuXMSOIjBct/zIg==
   dependencies:
     symbol.inspect "1.0.1"
 
-"@ton/ton@^15.2.0":
-  version "15.2.1"
-  resolved "https://registry.yarnpkg.com/@ton/ton/-/ton-15.2.1.tgz#be5a5b8576c4bae9e7ad52616b3092b6abcf7672"
-  integrity sha512-ICzozzATRfymkVfFVZrfVpKnCc5PLxAVeaB62mx/HsgllsjnR64UuoLuE6hqWHcA3/Hft9YLGdk2/rOHGZM6qA==
+"@ton/ton@15.2.0":
+  version "15.2.0"
+  resolved "https://registry.yarnpkg.com/@ton/ton/-/ton-15.2.0.tgz#a8d38ba4170b8d3d159ad433729ffea44c541c03"
+  integrity sha512-xddD1Oia7IAWl/VWgaHIdcsI8eIp1hmdEDWtYxAgeZOlwJCT+gfN0prwasM/IvPsI8y49A9/doIRZblXPWxd8g==
   dependencies:
     axios "^1.6.7"
     dataloader "^2.0.0"
@@ -2902,6 +2902,13 @@ caseless@~0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
   integrity sha512-4tYFyifaFfGacoiObjJegolkwSU4xQNGbVgUiNYVUxbQ2x2lUsFvY4hVgVzGiIe6WLOPqycWXA40l+PWsxthUw==
+
+ccxt@4.4.78:
+  version "4.4.78"
+  resolved "https://registry.yarnpkg.com/ccxt/-/ccxt-4.4.78.tgz#7c8ae7b5b5396d6a8c3891556736c599370f38bf"
+  integrity sha512-XjO31lpX4jGFQfsf3OSTYX93GA1TF2dUO54LARmbG6FUNxWiSoZgXF7CL1KqN2pZN7XfVJllEjUz/dF1TBg33g==
+  dependencies:
+    ws "^8.8.1"
 
 chai@^4.3.10:
   version "4.5.0"
@@ -6528,6 +6535,19 @@ ox@0.6.0:
     abitype "^1.0.6"
     eventemitter3 "5.0.1"
 
+ox@0.6.5:
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/ox/-/ox-0.6.5.tgz#e6506a589bd6af9b5fecfcb2c641b63c9882edb6"
+  integrity sha512-vmnH8KvMDwFZDbNY1mq2CBRBWIgSliZB/dFV0xKp+DfF/dJkTENt6nmA+DzHSSAgL/GO2ydjkXWvlndJgSY4KQ==
+  dependencies:
+    "@adraffy/ens-normalize" "^1.10.1"
+    "@noble/curves" "^1.6.0"
+    "@noble/hashes" "^1.5.0"
+    "@scure/bip32" "^1.5.0"
+    "@scure/bip39" "^1.4.0"
+    abitype "^1.0.6"
+    eventemitter3 "5.0.1"
+
 p-each-series@^2.1.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/p-each-series/-/p-each-series-2.2.0.tgz#105ab0357ce72b202a8a8b94933672657b5e2a9a"
@@ -8549,7 +8569,21 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-viem@^2.22.7, viem@^2.7.20:
+viem@2.22.9:
+  version "2.22.9"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-2.22.9.tgz#14ddb7f1ccf900784e347e1aa157e8e58043b0c2"
+  integrity sha512-2yy46qYhcdo8GZggQ3Zoq9QCahI0goddzpVI/vSnTpcClQBSDxYRCuAqRzzLqjvJ7hS0UYgplC7eRkM2sYgflw==
+  dependencies:
+    "@noble/curves" "1.7.0"
+    "@noble/hashes" "1.6.1"
+    "@scure/bip32" "1.6.0"
+    "@scure/bip39" "1.5.0"
+    abitype "1.0.7"
+    isows "1.0.6"
+    ox "0.6.5"
+    ws "8.18.0"
+
+viem@^2.7.20:
   version "2.22.7"
   resolved "https://registry.yarnpkg.com/viem/-/viem-2.22.7.tgz#70b92859a3401fa056f86a13c8d2befffde8bb2f"
   integrity sha512-heNQKOqpgAhdvu5xBAgWCqNVDkC6FfQyQ63+JVSUomOzmnbHAO1FKf4/JRe/s1McU1F4HkgjytOunQS9mbBD2g==
@@ -8876,6 +8910,11 @@ ws@^7.0.0, ws@^7.5.10:
   version "7.5.10"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.10.tgz#58b5c20dc281633f6c19113f39b349bd8bd558d9"
   integrity sha512-+dbF1tHwZpXcbOJdVOkzLDxZP1ailvSxM6ZweXTegylPny803bFhA+vqBYw4s31NSAk4S2Qz+AKXK9a4wkdjcQ==
+
+ws@^8.8.1:
+  version "8.18.2"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.18.2.tgz#42738b2be57ced85f46154320aabb51ab003705a"
+  integrity sha512-DMricUmwGZUVr++AEAe2uiVM7UoO9MAVZMDu05UQOaUII0lp+zOzLLU4Xqh/JvTqklB1T4uELaaPBKyjE1r4fQ==
 
 xml-name-validator@^3.0.0:
   version "3.0.0"

@@ -1,6 +1,6 @@
 {
   "name": "@heyanon/sdk",
-  "version": "2.1.14",
+  "version": "2.1.15",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -47,6 +47,7 @@
     "@ton-api/ton-adapter": "0.3.0",
     "@ton/core": "0.60.0",
     "@ton/ton": "15.2.0",
+    "ccxt": "4.4.78",
     "viem": "2.22.9",
     "vitest": "^2.1.8"
   }
