@@ -57,5 +57,6 @@ export interface AdapterExport {
     readonly tools: AiTool[];
     readonly functions: Record<string, (args: any, options: FunctionOptions) => Promise<FunctionReturn>>;
     readonly description: string;
-    readonly tags?: AdapterTag[];
+    readonly chains: Chain[];
+    readonly tags: AdapterTag[];
 }
