@@ -9,4 +9,5 @@ export enum AdapterTag {
     DEX = 'DEX',
     LP = 'LP',
     GAMES = 'Games',
+    CEX = 'CEX',
 }
