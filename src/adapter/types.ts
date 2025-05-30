@@ -15,6 +15,7 @@ export interface FunctionReturn {
 type SignTypedDataParameters = Omit<ViemSignTypedDataParameters, 'account'>;
 
 export interface EvmFunctionOptions {
+    readonly getAddress: () => Promise<Address>;
     readonly getProvider: (chainId: number) => PublicClient;
     readonly sendTransactions: (props: EVM.types.SendTransactionProps) => Promise<EVM.types.TransactionReturn>;
     readonly deployContracts: (props: DeployContractProps) => Promise<Address[]>;

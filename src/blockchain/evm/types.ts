@@ -13,7 +13,6 @@ export interface TransactionReturnData {
 }
 
 export interface TransactionReturn {
-    readonly isMultisig: boolean;
     readonly data: TransactionReturnData[];
 }
 
