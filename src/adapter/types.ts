@@ -52,6 +52,7 @@ export interface FunctionOptions {
     readonly getRecipient: (type: WalletType) => Promise<string>;
     readonly getUserTokens: () => Promise<UserToken[]>;
     readonly getCcxtExchange: (name: keyof typeof exchanges) => Promise<Exchange>;
+    readonly getTokenMap: (props: { evmAddresses: string[]; solanaAddresses: string[]; tonAddresses: string[] }) => Promise<{ [key: string]: string }>;
 }
 
 export interface AdapterExport {
