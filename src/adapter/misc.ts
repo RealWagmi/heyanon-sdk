@@ -10,4 +10,5 @@ export enum AdapterTag {
     LP = 'LP',
     GAMES = 'Games',
     CEX = 'CEX',
+    LAUNCHPAD = 'Launchpad'
 }
