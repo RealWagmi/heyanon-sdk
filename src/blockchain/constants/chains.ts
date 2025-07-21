@@ -9,7 +9,6 @@ export enum Chain {
     METIS = 'metis',
     KAVA_EVM = 'kava_evm',
     BASE = 'base',
-    IOTA_EVM = 'iota_evm',
     AVALANCHE = 'avalanche',
     ARBITRUM = 'arbitrum',
     SCROLL = 'scroll',

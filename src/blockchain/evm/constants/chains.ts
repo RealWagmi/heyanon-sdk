@@ -11,7 +11,6 @@ export const ChainIds = {
     [Chain.METIS]: 1088,
     [Chain.KAVA_EVM]: 2222,
     [Chain.BASE]: 8453,
-    [Chain.IOTA_EVM]: 8822,
     [Chain.AVALANCHE]: 43_114,
     [Chain.ARBITRUM]: 42_161,
     [Chain.SCROLL]: 534_352,
