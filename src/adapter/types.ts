@@ -1,4 +1,4 @@
-import { AiTool } from '../ai';
+import { OpenAI } from 'openai';
 import { EVM, Solana, TON, WalletType, Chain } from '../blockchain';
 import { Hex, PublicClient, SignMessageReturnType, SignTypedDataParameters as ViemSignTypedDataParameters, SignTypedDataReturnType, Address } from 'viem';
 import { Connection, PublicKey, Transaction as SolanaTransaction, VersionedTransaction as SolanaVersionedTransaction } from '@solana/web3.js';
@@ -56,9 +56,10 @@ export interface FunctionOptions {
 }
 
 export interface AdapterExport {
-    readonly tools: AiTool[];
-    readonly functions: Record<string, (args: any, options: FunctionOptions) => Promise<FunctionReturn>>;
-    readonly description: string;
     readonly chains: Chain[];
     readonly tags: AdapterTag[];
+    readonly description: string;
+    readonly functions: Record<string, (args: any, options: FunctionOptions) => Promise<FunctionReturn>>;
+    readonly executableFunctions: string[];
+    readonly tools: OpenAI.Chat.Completions.ChatCompletionTool[];
 }

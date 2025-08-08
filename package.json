@@ -1,6 +1,6 @@
 {
   "name": "@heyanon/sdk",
-  "version": "2.2.4",
+  "version": "2.3.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -48,6 +48,7 @@
     "@ton/core": "0.60.0",
     "@ton/ton": "15.2.0",
     "ccxt": "4.4.78",
+    "openai": "5.12.1",
     "viem": "2.22.9",
     "vitest": "^2.1.8"
   }
