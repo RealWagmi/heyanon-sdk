@@ -1458,10 +1458,10 @@
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
-"@real-wagmi/sdk@^1.4.5":
-  version "1.4.5"
-  resolved "https://registry.yarnpkg.com/@real-wagmi/sdk/-/sdk-1.4.5.tgz#967bc7494934241941eb45de6eab0b92d610bc1d"
-  integrity sha512-IfCA86jWWswli86yBPK194IzuMDLBGkuKSvHNjW9xTmlhAKP9lOGD26W6Z50zLMokv0WfxqoH69KS2Z/kOFecA==
+"@real-wagmi/sdk@^1.4.6":
+  version "1.4.6"
+  resolved "https://registry.yarnpkg.com/@real-wagmi/sdk/-/sdk-1.4.6.tgz#1b504e778e61398167bb9bec00de73839f027cdc"
+  integrity sha512-7k5W1pkrJBiuc2DVAmO4YhtJwEl1ohoem/T5Knc3wH1UMSTudDATN7nnUzXyDAuXrmMxUFTQchS68zVEsjmjeg==
   dependencies:
     "@uniswap/token-lists" "1.0.0-beta.33"
     big.js "^6.2.1"
@@ -6482,7 +6482,7 @@ onetime@^6.0.0:
   dependencies:
     mimic-fn "^4.0.0"
 
-openai@^5.12.1:
+openai@5.12.1:
   version "5.12.1"
   resolved "https://registry.yarnpkg.com/openai/-/openai-5.12.1.tgz#c86b266ce77714eb7b6f5831981acd93edddb662"
   integrity sha512-26s536j4Fi7P3iUma1S9H33WRrw0Qu8pJ2nYJHffrlKHPU0JK4d0r3NcMgqEcAeTdNLGYNyoFsqN4g4YE9vutg==

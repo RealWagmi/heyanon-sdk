@@ -8,7 +8,7 @@ export const WETH9 = {
     [Chain.ETHEREUM]: ethereumTokens.weth,
     [Chain.OPTIMISM]: optimismTokens.weth,
     [Chain.BSC]: bscTokens.wbnb,
-    [Chain.POLYGON]: polygonTokens.wmatic,
+    [Chain.POLYGON]: polygonTokens.wpol,
     [Chain.ZKSYNC]: zkSyncTokens.weth,
     [Chain.KAVA_EVM]: kavaTokens.wkava,
     [Chain.AVALANCHE]: avalancheTokens.wavax,
