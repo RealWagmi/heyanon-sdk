@@ -15,6 +15,7 @@ export enum Chain {
     SOLANA = 'solana',
     TON = 'ton',
     HYPEREVM = 'hyperevm',
+    PLASMA = 'plasma',
 }
 
 export type EvmChain = Exclude<Chain, Chain.SOLANA | Chain.TON>;

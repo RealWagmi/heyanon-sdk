@@ -14,5 +14,6 @@ export const ChainIds = {
     [Chain.AVALANCHE]: 43_114,
     [Chain.ARBITRUM]: 42_161,
     [Chain.SCROLL]: 534_352,
-    [Chain.HYPEREVM]: 999
+    [Chain.HYPEREVM]: 999,
+    [Chain.PLASMA]: 9745,
 } satisfies Record<EvmChain, number>;

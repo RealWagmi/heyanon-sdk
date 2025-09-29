@@ -19,4 +19,5 @@ export const WETH9 = {
     [Chain.SCROLL]: new Token(ChainIds[Chain.SCROLL], '0x5300000000000000000000000000000000000004', 18, 'WETH', 'Wrapped Ether'),
     [Chain.GNOSIS]: new Token(ChainIds[Chain.GNOSIS], '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d', 18, 'WXDAI', 'Wrapped XDAI'),
     [Chain.HYPEREVM]: new Token(ChainIds[Chain.HYPEREVM], '0x5555555555555555555555555555555555555555', 18, 'WHYPE', 'Wrapped HYPE'),
+    [Chain.PLASMA]: new Token(ChainIds[Chain.PLASMA], '0x6100E367285b01F48D07953803A2d8dCA5D19873', 18, 'WXPL', 'Wrapped XPL'),
 } satisfies Record<EvmChain, Token>;
