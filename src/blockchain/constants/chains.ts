@@ -57,6 +57,8 @@ export enum Chain {
     HYPEREVM = 'hyperevm',
     /** Plasma blockchain */
     PLASMA = 'plasma',
+    /** Monad blockchain */
+    MONAD = 'monad'
 }
 
 /**

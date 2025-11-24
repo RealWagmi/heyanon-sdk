@@ -72,4 +72,6 @@ export const ChainIds = {
     [Chain.HYPEREVM]: 999,
     /** Plasma - Chain ID: 9745 */
     [Chain.PLASMA]: 9745,
+    /** Monad - Chain ID: 143 */
+    [Chain.MONAD]: 143
 } satisfies Record<EvmChain, number>;
