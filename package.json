@@ -1,6 +1,6 @@
 {
   "name": "@heyanon/sdk",
-  "version": "2.3.7",
+  "version": "2.3.8",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

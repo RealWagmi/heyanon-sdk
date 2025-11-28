@@ -58,7 +58,7 @@ export enum Chain {
     /** Plasma blockchain */
     PLASMA = 'plasma',
     /** Monad blockchain */
-    MONAD = 'monad'
+    MONAD = 'monad',
 }
 
 /**
