@@ -1,6 +1,7 @@
 import { Chain, EVM, EvmChain } from '../blockchain';
 import { Address as TonAddress } from '@ton/ton';
 import { isAddress } from './is-address';
+import { getAddress } from 'viem';
 
 const { NATIVE_ADDRESS, WETH9 } = EVM.constants;
 const { isEvmChain } = EVM.utils;
@@ -105,6 +106,7 @@ export function normalizeAddress(chain: Chain, address: string): string {
 		}
 	}
 
+	if (isEvmChain(chain)) return getAddress(address);
 	if (chain === Chain.TON) {
 		const tonAddress = TonAddress.parse(address);
 		return tonAddress.toRawString();
