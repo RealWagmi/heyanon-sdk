@@ -48,7 +48,7 @@ export interface EvmFunctionOptions {
     /** Send transactions */
     readonly sendTransactions: (props: EVM.types.SendTransactionProps) => Promise<EVM.types.TransactionReturn>;
     /** Deploy smart contracts */
-    readonly deployContracts: (props: DeployContractProps) => Promise<Address[]>;
+    readonly deployContracts?: (props: DeployContractProps) => Promise<Address[]>;
     /** Sign messages (optional) */
     readonly signMessages?: (messages: Hex[]) => Promise<SignMessageReturnType[]>;
     /** Sign typed data (optional) */
@@ -89,6 +89,15 @@ export interface TonFunctionOptions {
     readonly getClient: () => Promise<TON.types.Client>;
     /** Send transactions */
     readonly sendTransactions: (props: TON.types.SendTransactionProps) => Promise<TON.types.TransactionReturn>;
+}
+
+export interface UserFunctionOptions {
+    /** Get user's id */
+    readonly getUserId: () => Promise<string>;
+    /** Get user's token list */
+    readonly getUserTokens: () => Promise<UserToken[]>;
+    /** Add token to user's token list */
+    readonly addUserToken: (token: UserToken) => Promise<UserToken>;
 }
 
 /**
@@ -137,21 +146,19 @@ export interface UserToken {
  */
 export interface FunctionOptions {
     /** EVM blockchain options */
-    readonly evm: EvmFunctionOptions;
+    readonly evm?: EvmFunctionOptions;
     /** Solana blockchain options */
-    readonly solana: SolanaFunctionOptions;
+    readonly solana?: SolanaFunctionOptions;
     /** TON blockchain options */
-    readonly ton: TonFunctionOptions;
+    readonly ton?: TonFunctionOptions;
+    /** User options */
+    readonly user?: UserFunctionOptions;
     /** Send notification to user */
-    readonly notify: (message: string, type?: 'alert' | 'regular') => Promise<void>;
+    readonly notify?: (message: string, type?: 'alert' | 'regular') => Promise<void>;
     /** Get recipient address for specific wallet type */
-    readonly getRecipient: (type: WalletType) => Promise<string>;
-    /** Get user's token list */
-    readonly getUserTokens: () => Promise<UserToken[]>;
+    readonly getRecipient?: (type: WalletType) => Promise<string>;
     /** Get CCXT exchange instance */
-    readonly getCcxtExchange: (name: keyof typeof exchanges) => Promise<Exchange>;
-    /** Add token to user's token list */
-    readonly addUserToken: (token: UserToken) => Promise<UserToken>;
+    readonly getCcxtExchange?: (name: keyof typeof exchanges) => Promise<Exchange>;
 }
 
 /**
