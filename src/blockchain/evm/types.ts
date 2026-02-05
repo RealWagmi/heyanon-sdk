@@ -1,4 +1,4 @@
-import { Abi, Address, Hex } from 'viem';
+import { Abi, Address, Hex, SignTypedDataParameters } from 'viem';
 
 /**
  * Parameters for an EVM transaction
@@ -305,4 +305,99 @@ export interface DeployContractProps {
     readonly account: Address;
     /** Array of contracts to deploy */
     readonly contracts: ContractProps[];
+}
+
+/**
+ * Properties for signing one or multiple messages
+ * @interface SignMessagesProps
+ * @example
+ * ```typescript
+ * // Single message
+ * const signProps: SignMessagesProps = {
+ *   account: '0x742d35Cc6634C0532925a3b8D4C2CA1c1DfF0bE8',
+ *   messages: ['0x1234567890abcdef...']
+ * };
+ *
+ * // Batch messages (multi-sig)
+ * const batchSignProps: SignMessagesProps = {
+ *   account: '0x742d35Cc6634C0532925a3b8D4C2CA1c1DfF0bE8',
+ *   messages: ['0x1111...', '0x2222...', '0x3333...']
+ * };
+ * ```
+ */
+export interface SignMessagesProps {
+    /** Account address that will sign the messages */
+    readonly account: Address;
+    /** Array of messages to sign */
+    readonly messages: Hex[];
+}
+
+/**
+ * Properties for signing one or multiple typed data
+ * @interface SignTypedDatasProps
+ * @example
+ * ```typescript
+ * // Single typed data
+ * const signProps: SignTypedDatasProps = {
+ *   account: '0x742d35Cc6634C0532925a3b8D4C2CA1c1DfF0bE8',
+ *   datas: [{
+ *     domain: {
+ *       name: 'My Token',
+ *       version: '1.0.0',
+ *       chainId: 1,
+ *       verifyingContract: '0x1234567890abcdef...'
+ *     },
+ *     primaryType: 'MyToken',
+ *     message: {
+ *       name: 'My Token',
+ *       symbol: 'MTK',
+ *       decimals: 18,
+ *       totalSupply: parseUnits('1000000', 18)
+ *     }
+ *   }]
+ * };
+ *
+ * // Batch typed data (multi-sig)
+ * const batchSignProps: SignTypedDatasProps = {
+ *   account: '0x742d35Cc6634C0532925a3b8D4C2CA1c1DfF0bE8',
+ *   datas: [
+ *     {
+ *       domain: {
+ *         name: 'My Token',
+ *         version: '1.0.0',
+ *         chainId: 1,
+ *         verifyingContract: '0x1234567890abcdef...'
+ *       },
+ *       primaryType: 'MyToken',
+ *       message: {
+ *         name: 'My Token',
+ *         symbol: 'MTK',
+ *         decimals: 18,
+ *         totalSupply: parseUnits('1000000', 18)
+ *       }
+ *     },
+ *     {
+ *       domain: {
+ *         name: 'My Token',
+ *         version: '1.0.0',
+ *         chainId: 1,
+ *         verifyingContract: '0x1234567890abcdef...'
+ *       },
+ *       primaryType: 'MyToken',
+ *       message: {
+ *         name: 'My Token',
+ *         symbol: 'MTK',
+ *         decimals: 18,
+ *         totalSupply: parseUnits('1000000', 18)
+ *       }
+ *     }
+ *   ]
+ * };
+ * ```
+ */
+export interface SignTypedDatasProps {
+    /** Account address that will sign the typed data */
+    readonly account: Address;
+    /** Array of typed data to sign */
+    readonly datas: Omit<SignTypedDataParameters, 'account'>[];
 }

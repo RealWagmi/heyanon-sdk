@@ -1,10 +1,10 @@
 import { OpenAI } from 'openai';
 import { EVM, Solana, TON, WalletType, Chain } from '../blockchain';
-import { Hex, PublicClient, SignMessageReturnType, SignTypedDataParameters as ViemSignTypedDataParameters, SignTypedDataReturnType, Address } from 'viem';
+import { PublicClient, SignMessageReturnType, SignTypedDataReturnType, Address } from 'viem';
 import { Connection, PublicKey, Transaction as SolanaTransaction, VersionedTransaction as SolanaVersionedTransaction } from '@solana/web3.js';
 import { AdapterTag } from './misc';
 import { Address as TonAddress } from '@ton/ton';
-import { DeployContractProps } from '../blockchain/evm/types';
+import { DeployContractProps, SignMessagesProps, SignTypedDatasProps } from '../blockchain/evm/types';
 import { Exchange, exchanges } from 'ccxt';
 
 /**
@@ -24,8 +24,6 @@ export interface FunctionReturn {
     /** Result data as string */
     readonly data: string;
 }
-
-type SignTypedDataParameters = Omit<ViemSignTypedDataParameters, 'account'>;
 
 /**
  * Options for working with EVM blockchains
@@ -50,9 +48,9 @@ export interface EvmFunctionOptions {
     /** Deploy smart contracts */
     readonly deployContracts?: (props: DeployContractProps) => Promise<Address[]>;
     /** Sign messages (optional) */
-    readonly signMessages?: (messages: Hex[]) => Promise<SignMessageReturnType[]>;
+    readonly signMessages?: (props: SignMessagesProps) => Promise<SignMessageReturnType[]>;
     /** Sign typed data (optional) */
-    readonly signTypedDatas?: (args: SignTypedDataParameters[]) => Promise<SignTypedDataReturnType[]>;
+    readonly signTypedDatas?: (props: SignTypedDatasProps) => Promise<SignTypedDataReturnType[]>;
 }
 
 /**
@@ -75,7 +73,7 @@ export interface SolanaFunctionOptions {
     /** Send transactions */
     readonly sendTransactions: (props: Solana.types.SendTransactionProps) => Promise<Solana.types.TransactionReturn>;
     /** Sign transactions (optional) */
-    readonly signTransactions?: (transactions: Solana.types.SignTransactionProps[]) => Promise<(SolanaTransaction | SolanaVersionedTransaction)[]>;
+    readonly signTransactions?: (props: Solana.types.SignTransactionsProps) => Promise<(SolanaTransaction | SolanaVersionedTransaction)[]>;
 }
 
 /**

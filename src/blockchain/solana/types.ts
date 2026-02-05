@@ -191,121 +191,45 @@ export interface SendTransactionProps {
 }
 
 /**
- * Properties for signing Solana transactions
- * @interface SignTransactionProps
+ * Properties for signing a single transaction
+ * @interface SignTransaction
  * @example
  * ```typescript
- * // Sign a versioned transaction (default)
- * const signProps: SignTransactionProps = {
+ * const signTransaction: SignTransaction = {
  *   transaction: await buildV0Transaction({
  *     connection: options.solana.getConnection(),
  *     payer: userPublicKey,
- *     instructions: [transferInstruction]
- *   })
- * };
- *
- * // Sign with specific method
- * const partialSignProps: SignTransactionProps = {
- *   transaction: versionedTransaction,
- *   signName: 'partialSign' // For multi-sig scenarios
- * };
- *
- * // Sign legacy transaction
- * const legacySignProps: SignTransactionProps = {
- *   transaction: new Transaction().add(transferInstruction),
+ *     instructions: [SystemProgram.transfer({
+ *       fromPubkey: userPublicKey,
+ *       toPubkey: recipientPublicKey,
+ *       lamports: 0.1 * LAMPORTS_PER_SOL
+ *     })]
+ *   }),
  *   signName: 'sign'
  * };
- *
- * // Multi-signature workflow
- * async function multiSigTransactionFlow(
- *   transaction: VersionedTransaction,
- *   signers: PublicKey[]
- * ) {
- *   const signatures: (VersionedTransaction | Transaction)[] = [];
- *
- *   // Each signer partially signs the transaction
- *   for (const signer of signers) {
- *     const signedTx = await options.solana.signTransactions([{
- *       transaction,
- *       signName: 'partialSign'
- *     }]);
- *
- *     signatures.push(signedTx[0]);
- *   }
- *
- *   return signatures;
- * }
- *
- * // Batch signing
- * async function signMultipleTransactions(
- *   transactions: (VersionedTransaction | Transaction)[]
- * ) {
- *   const signProps = transactions.map(tx => ({
- *     transaction: tx,
- *     signName: 'sign' as const
- *   }));
- *
- *   return await options.solana.signTransactions(signProps);
- * }
- *
- * // Conditional signing based on transaction type
- * function createSignProps(
- *   transaction: VersionedTransaction | Transaction,
- *   isMultiSig: boolean = false
- * ): SignTransactionProps {
- *   return {
- *     transaction,
- *     signName: isMultiSig ? 'partialSign' : 'sign'
- *   };
- * }
- *
- * // Prepare transaction for signing
- * async function prepareAndSignTransaction(
- *   instructions: TransactionInstruction[],
- *   requiresPartialSign: boolean = false
- * ) {
- *   const transaction = await buildV0Transaction({
- *     connection: options.solana.getConnection(),
- *     payer: await options.solana.getPublicKey(),
- *     instructions
- *   });
- *
- *   const signProps: SignTransactionProps = {
- *     transaction,
- *     signName: requiresPartialSign ? 'partialSign' : 'sign'
- *   };
- *
- *   const [signedTransaction] = await options.solana.signTransactions([signProps]);
- *   return signedTransaction;
- * }
- *
- * // Integration with wallet adapters
- * async function signTransactionWithWallet(
- *   transaction: VersionedTransaction,
- *   walletType: 'phantom' | 'solflare' | 'backpack'
- * ) {
- *   const signProps: SignTransactionProps = {
- *     transaction,
- *     signName: 'sign'
- *   };
- *
- *   // Different wallets might have different signing patterns
- *   switch (walletType) {
- *     case 'phantom':
- *       return await options.solana.signTransactions([signProps]);
- *     case 'solflare':
- *       return await options.solana.signTransactions([signProps]);
- *     case 'backpack':
- *       return await options.solana.signTransactions([signProps]);
- *     default:
- *       throw new Error(`Unsupported wallet: ${walletType}`);
- *   }
- * }
  * ```
  */
-export interface SignTransactionProps {
+export interface SignTransaction {
     /** Transaction to sign (versioned or legacy) */
     readonly transaction: VersionedTransaction | Transaction;
     /** Signing method - 'sign' for full signature, 'partialSign' for multi-sig scenarios */
     readonly signName?: 'sign' | 'partialSign';
+}
+
+/**
+ * Properties for signing one or multiple transactions
+ * @interface SignTransactionsProps
+ * @example
+ * ```typescript
+ * const signTransactions: SignTransactionsProps = {
+ *   account: userPublicKey,
+ *   transactions: [signTransaction]
+ * };
+ * ```
+ */
+export interface SignTransactionsProps {
+    /** Account that will sign the transactions */
+    readonly account: PublicKey;
+    /** Array of transactions to sign */
+    readonly transactions: SignTransaction[];
 }
