@@ -73,5 +73,7 @@ export const ChainIds = {
     /** Plasma - Chain ID: 9745 */
     [Chain.PLASMA]: 9745,
     /** Monad - Chain ID: 143 */
-    [Chain.MONAD]: 143
+    [Chain.MONAD]: 143,
+    /** Robinhood - Chain ID: 4663 */
+    [Chain.ROBINHOOD]: 4663,
 } satisfies Record<EvmChain, number>;

@@ -97,5 +97,7 @@ export const WETH9 = {
     /** Wrapped XPL (WXPL) on Plasma */
     [Chain.PLASMA]: new Token(ChainIds[Chain.PLASMA], '0x6100E367285b01F48D07953803A2d8dCA5D19873', 18, 'WXPL', 'Wrapped XPL'),
     /** Wrapped MON (WMON) on Monad */
-    [Chain.MONAD]: new Token(ChainIds[Chain.MONAD], '0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A', 18, 'WMON', 'Wrapped MON')
+    [Chain.MONAD]: new Token(ChainIds[Chain.MONAD], '0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A', 18, 'WMON', 'Wrapped MON'),
+    /** Wrapped Ether (WETH) on Robinhood */
+    [Chain.ROBINHOOD]: new Token(ChainIds[Chain.ROBINHOOD], '0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73', 18, 'WETH', 'Wrapped Ether')
 } satisfies Record<EvmChain, Token>;
