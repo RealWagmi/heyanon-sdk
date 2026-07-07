@@ -56,10 +56,6 @@ export const ChainIds = {
     [Chain.SONIC]: 146,
     /** zkSync Era - Chain ID: 324 */
     [Chain.ZKSYNC]: 324,
-    /** Metis Andromeda - Chain ID: 1088 */
-    [Chain.METIS]: 1088,
-    /** Kava EVM - Chain ID: 2222 */
-    [Chain.KAVA_EVM]: 2222,
     /** Base - Chain ID: 8453 */
     [Chain.BASE]: 8453,
     /** Avalanche C-Chain - Chain ID: 43114 */

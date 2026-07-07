@@ -1,5 +1,5 @@
 import { Chain, EvmChain } from '../../constants';
-import { arbitrumTokens, avalancheTokens, baseTokens, bscTokens, ethereumTokens, kavaTokens, metisTokens, optimismTokens, polygonTokens, sonicTokens, Token, zkSyncTokens } from '@real-wagmi/sdk';
+import { arbitrumTokens, avalancheTokens, baseTokens, bscTokens, ethereumTokens, optimismTokens, polygonTokens, sonicTokens, Token, zkSyncTokens } from '@real-wagmi/sdk';
 import { ChainIds } from './chains';
 
 /**
@@ -76,14 +76,10 @@ export const WETH9 = {
     [Chain.POLYGON]: polygonTokens.wpol,
     /** Wrapped Ether (WETH) on zkSync Era */
     [Chain.ZKSYNC]: zkSyncTokens.weth,
-    /** Wrapped KAVA (WKAVA) on Kava EVM */
-    [Chain.KAVA_EVM]: kavaTokens.wkava,
     /** Wrapped AVAX (WAVAX) on Avalanche */
     [Chain.AVALANCHE]: avalancheTokens.wavax,
     /** Wrapped Ether (WETH) on Arbitrum */
     [Chain.ARBITRUM]: arbitrumTokens.weth,
-    /** Wrapped METIS (WMETIS) on Metis */
-    [Chain.METIS]: metisTokens.wmetis,
     /** Wrapped Ether (WETH) on Base */
     [Chain.BASE]: baseTokens.weth,
     /** Wrapped S (WS) on Sonic */

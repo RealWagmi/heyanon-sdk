@@ -37,10 +37,6 @@ export enum Chain {
     SONIC = 'sonic',
     /** zkSync Era */
     ZKSYNC = 'zksync',
-    /** Metis Andromeda */
-    METIS = 'metis',
-    /** Kava EVM */
-    KAVA_EVM = 'kava_evm',
     /** Base Layer 2 */
     BASE = 'base',
     /** Avalanche C-Chain */
