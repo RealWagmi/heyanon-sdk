@@ -2,7 +2,6 @@ import { OpenAI } from 'openai';
 import { EVM, Solana, TON, WalletType, Chain } from '../blockchain';
 import { PublicClient, SignMessageReturnType, SignTypedDataReturnType, Address } from 'viem';
 import { Connection, PublicKey, Transaction as SolanaTransaction, VersionedTransaction as SolanaVersionedTransaction } from '@solana/web3.js';
-import { AdapterTag } from './misc';
 import { Address as TonAddress } from '@ton/ton';
 import { DeployContractProps, SignMessagesProps, SignTypedDatasProps } from '../blockchain/evm/types';
 import { Exchange, exchanges } from 'ccxt';
@@ -168,7 +167,6 @@ export interface FunctionOptions {
  * ```typescript
  * const myAdapter: AdapterExport = {
  *   chains: [Chain.Ethereum, Chain.Polygon],
- *   tags: [AdapterTag.DeFi, AdapterTag.DEX],
  *   description: "Swap tokens on decentralized exchanges",
  *   functions: {
  *     swap: async (args, options) => ({ success: true, data: "Swap completed" })
@@ -181,8 +179,8 @@ export interface FunctionOptions {
 export interface AdapterExport {
     /** Supported blockchain networks */
     readonly chains: Chain[];
-    /** Adapter tags for categorization */
-    readonly tags: AdapterTag[];
+    /** Adapter name */
+    readonly name: string;
     /** Adapter description */
     readonly description: string;
     /** Available adapter functions */
