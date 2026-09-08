@@ -3,7 +3,7 @@ import { EVM, Solana, TON, WalletType, Chain } from '../blockchain';
 import { PublicClient, SignMessageReturnType, SignTypedDataReturnType, Address } from 'viem';
 import { Connection, PublicKey, Transaction as SolanaTransaction, VersionedTransaction as SolanaVersionedTransaction } from '@solana/web3.js';
 import { Address as TonAddress } from '@ton/ton';
-import { DeployContractProps, SignMessagesProps, SignTypedDatasProps } from '../blockchain/evm/types';
+import { SignMessagesProps, SignTypedDatasProps } from '../blockchain/evm/types';
 import { Exchange, exchanges } from 'ccxt';
 
 /**
@@ -33,7 +33,6 @@ export interface FunctionReturn {
  *   getAddress: async () => "0x742d35Cc6634C0532925a3b8D4C2CA1c1DfF0bE8",
  *   getProvider: (chainId) => new PublicClient({ chain: { id: chainId } }),
  *   sendTransactions: async (props) => ({ success: true, hash: "0x..." }),
- *   deployContracts: async (props) => ["0x123..."]
  * };
  * ```
  */
@@ -44,8 +43,6 @@ export interface EvmFunctionOptions {
     readonly getProvider: (chainId: number) => PublicClient;
     /** Send transactions */
     readonly sendTransactions: (props: EVM.types.SendTransactionProps) => Promise<EVM.types.TransactionReturn>;
-    /** Deploy smart contracts */
-    readonly deployContracts?: (props: DeployContractProps) => Promise<Address[]>;
     /** Sign messages (optional) */
     readonly signMessages?: (props: SignMessagesProps) => Promise<SignMessageReturnType[]>;
     /** Sign typed data (optional) */

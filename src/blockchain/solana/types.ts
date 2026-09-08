@@ -212,8 +212,6 @@ export interface SendTransactionProps {
 export interface SignTransaction {
     /** Transaction to sign (versioned or legacy) */
     readonly transaction: VersionedTransaction | Transaction;
-    /** Signing method - 'sign' for full signature, 'partialSign' for multi-sig scenarios */
-    readonly signName?: 'sign' | 'partialSign';
 }
 
 /**
