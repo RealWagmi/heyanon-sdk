@@ -1,4 +1,4 @@
-import { Abi, Address, Hex, SignTypedDataParameters } from 'viem';
+import { Address, Hex, SignTypedDataParameters } from 'viem';
 
 /**
  * Parameters for an EVM transaction
