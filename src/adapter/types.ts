@@ -92,8 +92,6 @@ export interface UserFunctionOptions {
     readonly getUserTokens: () => Promise<UserToken[]>;
     /** Add token to user's token list */
     readonly addUserToken: (token: UserToken) => Promise<UserToken>;
-    /** Get user's password */
-    readonly getUserPassword?: () => Promise<string>;
 }
 
 /**
