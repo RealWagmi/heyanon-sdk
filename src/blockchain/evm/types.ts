@@ -43,6 +43,12 @@ export interface TransactionParams {
     readonly value?: bigint;
     /** Gas limit for the transaction (optional) */
     readonly gas?: bigint;
+    /** Gas Price for the transaction (optional) */
+    readonly gasPrice?: bigint;
+     /** Max fee per gas for the transaction (optional) */
+    readonly maxFeePerGas?: bigint;
+     /** Max priority fee per gas for the transaction (optional) */
+    readonly maxPriorityFeePerGas?: bigint;
 }
 
 /**
