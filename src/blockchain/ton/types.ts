@@ -1,7 +1,7 @@
 import { SenderArguments } from '@ton/core';
 import { TonApiClient } from '@ton-api/client';
 import { ContractAdapter } from '@ton-api/ton-adapter';
-import { Address, TonClient, TonClient4 } from '@ton/ton';
+import { Address, TonClient } from '@ton/ton';
 
 /**
  * Data returned for each executed TON transaction
@@ -285,9 +285,6 @@ export interface SendTransactionProps {
  *   client: new TonClient({
  *     endpoint: 'https://toncenter.com/api/v2/jsonRPC'
  *   }),
- *   client4: new TonClient4({
- *     endpoint: 'https://mainnet-v4.tonhubapi.com'
- *   }),
  *   adapter: new ContractAdapter()
  * };
  *
@@ -298,13 +295,7 @@ export interface SendTransactionProps {
  *
  *   // Use TonClient for basic operations
  *   const balance = await client.client.getBalance(address);
- *
- *   // Use TonClient4 for v4 API features
- *   const accountState = await client.client4.getAccount(
- *     client.client4.provider.block.lastSeqno,
- *     address
- *   );
- *
+ 
  *   return {
  *     address: address.toString(),
  *     balance: balance.toString(),
@@ -374,20 +365,15 @@ export interface SendTransactionProps {
  *
  * // Multi-client balance checking
  * async function getComprehensiveBalance(address: Address, client: Client) {
- *   const [apiBalance, clientBalance, client4Balance] = await Promise.allSettled([
+ *   const [apiBalance, clientBalance] = await Promise.allSettled([
  *     client.api.accounts.getAccount(address.toString())
  *       .then(acc => acc.balance),
  *     client.client.getBalance(address),
- *     client.client4.getAccount(
- *       await client.client4.provider.block.lastSeqno,
- *       address
- *     ).then(acc => acc.account.balance?.coins || 0n)
  *   ]);
  *
  *   return {
  *     api: apiBalance.status === 'fulfilled' ? apiBalance.value : null,
- *     client: clientBalance.status === 'fulfilled' ? clientBalance.value : null,
- *     client4: client4Balance.status === 'fulfilled' ? client4Balance.value : null
+ *     client: clientBalance.status === 'fulfilled' ? clientBalance.value : null
  *   };
  * }
  *
@@ -398,7 +384,6 @@ export interface SendTransactionProps {
  *   endpoints?: {
  *     api?: string;
  *     client?: string;
- *     client4?: string;
  *   };
  * }): Client {
  *   const isTestnet = config.network === 'testnet';
@@ -413,11 +398,6 @@ export interface SendTransactionProps {
  *         ? 'https://testnet.toncenter.com/api/v2/jsonRPC'
  *         : 'https://toncenter.com/api/v2/jsonRPC')
  *     }),
- *     client4: new TonClient4({
- *       endpoint: config.endpoints?.client4 || (isTestnet
- *         ? 'https://testnet-v4.tonhubapi.com'
- *         : 'https://mainnet-v4.tonhubapi.com')
- *     }),
  *     adapter: new ContractAdapter()
  *   };
  * }
@@ -428,8 +408,6 @@ export interface Client {
     readonly api: TonApiClient;
     /** Standard TON client for basic blockchain operations */
     readonly client: TonClient;
-    /** TON v4 client for advanced features and better performance */
-    readonly client4: TonClient4;
     /** Contract adapter for smart contract interactions */
     readonly adapter: ContractAdapter;
 }
