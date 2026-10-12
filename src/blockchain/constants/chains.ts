@@ -57,6 +57,10 @@ export enum Chain {
     MONAD = 'monad',
     /** Robinhood blockchain */
     ROBINHOOD = 'robinhood',
+    /** ARC blockchain */
+    ARC = 'arc',
+    /** INK blockchain */
+    INK = 'ink'
 }
 
 /**

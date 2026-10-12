@@ -1,6 +1,7 @@
 import { Chain, EvmChain } from '../../constants';
 import { arbitrumTokens, avalancheTokens, baseTokens, bscTokens, ethereumTokens, optimismTokens, polygonTokens, sonicTokens, Token, zkSyncTokens } from '@real-wagmi/sdk';
 import { ChainIds } from './chains';
+import { zeroAddress } from 'viem';
 
 /**
  * Mapping of EVM chains to their respective wrapped native token contracts (WETH9-like implementations)
@@ -95,5 +96,9 @@ export const WETH9 = {
     /** Wrapped MON (WMON) on Monad */
     [Chain.MONAD]: new Token(ChainIds[Chain.MONAD], '0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A', 18, 'WMON', 'Wrapped MON'),
     /** Wrapped Ether (WETH) on Robinhood */
-    [Chain.ROBINHOOD]: new Token(ChainIds[Chain.ROBINHOOD], '0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73', 18, 'WETH', 'Wrapped Ether')
+    [Chain.ROBINHOOD]: new Token(ChainIds[Chain.ROBINHOOD], '0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73', 18, 'WETH', 'Wrapped Ether'),
+    /** Wrapped Ether (WETH) on INK */
+    [Chain.INK]: new Token(ChainIds[Chain.INK], '0x4200000000000000000000000000000000000006', 18, 'WETH', 'Wrapped Ether'),
+    /** USDC (USDC) on ARC (0x3600000000000000000000000000000000000000)*/
+    [Chain.ARC]: new Token(ChainIds[Chain.ARC], zeroAddress, 18, 'USDC', 'USDC'),
 } satisfies Record<EvmChain, Token>;

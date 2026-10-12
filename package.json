@@ -1,6 +1,6 @@
 {
   "name": "@heyanon/sdk",
-  "version": "2.5.4",
+  "version": "2.6.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -42,16 +42,16 @@
     "heyanon"
   ],
   "dependencies": {
-    "@real-wagmi/sdk": "^1.4.6",
+    "@real-wagmi/sdk": "1.4.6",
     "@solana/web3.js": "1.98.0",
     "@ton-api/client": "0.3.1",
     "@ton-api/ton-adapter": "0.3.0",
     "@ton/core": "0.60.0",
-    "@ton/crypto": "^3.3.0",
+    "@ton/crypto": "3.3.0",
     "@ton/ton": "15.2.0",
     "ccxt": "4.4.78",
     "openai": "7.20.0",
-    "viem": "2.41.2",
+    "viem": "2.57.4",
     "vitest": "^2.1.8"
   }
 }
