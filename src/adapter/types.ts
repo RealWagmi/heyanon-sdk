@@ -5,6 +5,7 @@ import { Connection, PublicKey, Transaction as SolanaTransaction, VersionedTrans
 import { Address as TonAddress } from '@ton/ton';
 import { SignMessagesProps, SignTypedDatasProps } from '../blockchain/evm/types';
 import { Exchange, exchanges } from 'ccxt';
+import { CardDraft } from '../cards';
 
 /**
  * Result of adapter function execution
@@ -15,13 +16,25 @@ import { Exchange, exchanges } from 'ccxt';
  *   success: true,
  *   data: "Transaction hash: 0x123..."
  * };
+ *
+ * // With a structured card for the UI (see `withCards`)
+ * const withCard: FunctionReturn = withCards(toResult("Swapped 0.5 ETH for 1742.18 USDC"), {
+ *   type: 'tx.swap', protocol: '1inch', chain: Chain.ARBITRUM,
+ *   sent: { amount: '0.5', symbol: 'ETH' }, received: { amount: '1742.18', symbol: 'USDC' },
+ * });
  * ```
  */
 export interface FunctionReturn {
     /** Success status of the operation */
     readonly success: boolean;
-    /** Result data as string */
+    /** Result data as string — the text the model reads */
     readonly data: string;
+    /**
+     * Structured cards for the UI — zero or more per call. Present only when the function actually did something
+     * (a no-op success carries no cards); allowed on a failed result when a transaction was already sent.
+     * Build them with `withCards` so they are validated.
+     */
+    readonly cards?: readonly CardDraft[];
 }
 
 /**
