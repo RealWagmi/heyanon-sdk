@@ -31,6 +31,14 @@ describe('toDecimalString', () => {
         expect(toDecimalString('1742.183412')).toBe('1742.183412');
     });
 
+    it('keeps the decimal position for zero-prefixed mantissas', () => {
+        expect(toDecimalString('0.5e-1')).toBe('0.05');
+        expect(toDecimalString('0.001e3')).toBe('1');
+        expect(toDecimalString('0.0e5')).toBe('0');
+        expect(toDecimalString(0.00001234)).toBe('0.00001234');
+        expect(toDecimalString('10.5e1')).toBe('105');
+    });
+
     it('throws on non-numbers', () => {
         expect(() => toDecimalString('1,000')).toThrow(/not a decimal/);
         expect(() => toDecimalString('abc')).toThrow(/not a decimal/);

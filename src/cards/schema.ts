@@ -152,9 +152,16 @@ function build(mode: Mode) {
         /** Display hint: USD price of one token at the time of the action */
         priceUsd: unsignedDecimal.optional(),
     };
-    const token = obj(tokenShape).refine(hasIdentity, { error: 'token needs symbol or address' });
+    /** When `decimals` is present the amount is in base units and must be an integer. */
+    const baseUnitsAreIntegers = (t: { amount?: string; decimals?: number }) => t.decimals === undefined || t.amount === undefined || !t.amount.includes('.');
+    const integerWhenScaled = { error: 'amount must be an integer in base units when decimals is set', path: ['amount'] };
+    const token = obj(tokenShape)
+        .refine(hasIdentity, { error: 'token needs symbol or address' })
+        .refine(baseUnitsAreIntegers, integerWhenScaled);
     /** Same as `token` but the amount may be negative (pnl) */
-    const signedToken = obj({ ...tokenShape, amount: signedDecimal.optional() }).refine(hasIdentity, { error: 'token needs symbol or address' });
+    const signedToken = obj({ ...tokenShape, amount: signedDecimal.optional() })
+        .refine(hasIdentity, { error: 'token needs symbol or address' })
+        .refine(baseUnitsAreIntegers, integerWhenScaled);
     const tokenRef = obj({ symbol: text(64).optional(), address: text(128).optional() }).refine(hasIdentity, { error: 'token ref needs symbol or address' });
 
     const txRef = obj({ chain: chainSchema, hash: text(128), url: httpUrl.optional(), role: z.enum(TX_ROLES).optional() });
@@ -761,7 +768,7 @@ export const venueOrderCardSchema: Schema<VenueOrderCardData> = lenient.members.
 export const perpPositionCardSchema: Schema<PerpPositionCardData> = lenient.members.perpPosition;
 export const perpMarginCardSchema: Schema<PerpMarginCardData> = lenient.members.perpMargin;
 export const venueTransferCardSchema: Schema<VenueTransferCardData> = lenient.members.venueTransfer;
-export const automationCardSchema: Schema<AutomationCardData> = lenient.members.automation;
+export const automationCardSchema: Schema<AutomationCardData> = lenient.members.automation.superRefine(automationConsistency);
 export const genericCardSchema: Schema<GenericCardData> = lenient.members.generic;
 
 /** `CardData` on the wire: unknown keys at any depth are stripped. */

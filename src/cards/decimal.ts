@@ -28,17 +28,17 @@ function scaleBigInt(value: bigint, decimals: number): string {
     return normalize(`${negative ? '-' : ''}${whole}${fraction ? `.${fraction}` : ''}`);
 }
 
-/** `'1.66e-7'` → `'0.000000166'`, `'1e+21'` → `'1000000000000000000000'`. Input is already validated as numeric. */
+/** `'1.66e-7'` → `'0.000000166'`, `'0.5e-1'` → `'0.05'`, `'1e+21'` → `'1000000000000000000000'`. Input is already validated as numeric. */
 function expandExponent(input: string): string {
     const match = /^(-?)(\d*)(?:\.(\d*))?e([+-]?\d+)$/i.exec(input);
     if (!match) return input;
     const [, sign, intPart, fracPart = '', expText] = match;
-    const exponent = Number(expText);
-    const mantissa = `${intPart}${fracPart}`.replace(/^0+(?=\d)/, '');
-    const pointAt = intPart.replace(/^0+(?=\d)/, '').length + exponent;
-    if (pointAt <= 0) return `${sign}0.${'0'.repeat(-pointAt)}${mantissa}`;
-    if (pointAt >= mantissa.length) return `${sign}${mantissa}${'0'.repeat(pointAt - mantissa.length)}`;
-    return `${sign}${mantissa.slice(0, pointAt)}.${mantissa.slice(pointAt)}`;
+    // Keep every digit of the mantissa; `normalize` removes leading and trailing zeros afterwards.
+    const digits = `${intPart}${fracPart}` || '0';
+    const pointAt = intPart.length + Number(expText);
+    if (pointAt <= 0) return `${sign}0.${'0'.repeat(-pointAt)}${digits}`;
+    if (pointAt >= digits.length) return `${sign}${digits}${'0'.repeat(pointAt - digits.length)}`;
+    return `${sign}${digits.slice(0, pointAt)}.${digits.slice(pointAt)}`;
 }
 
 /** Leading-zero and trailing-zero cleanup: `'.5'` → `'0.5'`, `'5.'` → `'5'`, `'007.10'` → `'7.1'`, `'-0'` → `'0'`. */

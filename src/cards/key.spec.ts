@@ -56,6 +56,8 @@ describe('cardKey', () => {
 
     it('keys launches by token address and copy-trading rules by chain and target', () => {
         expect(cardKey(DRAFTS['token.launch'])).toBe('launch:solana:So11111111111111111111111111111111111111112');
+        const evmLaunch = { ...DRAFTS['token.launch'], chain: Chain.BASE, token: { ...DRAFTS['token.launch'].token, address: '0xAbCdEf' } };
+        expect(cardKey(evmLaunch)).toBe('launch:base:0xabcdef');
         const rule = { type: 'automation' as const, kind: 'copytrade' as const, summary: 'Copy', copytrade: { chain: Chain.BASE, target: '0xTarget', status: 'active' as const } };
         expect(cardKey(rule)).toBe('copytrade:base:0xtarget');
         expect(cardKey({ ...rule, copytrade: { ...rule.copytrade, status: 'paused' } })).toBe(cardKey(rule));

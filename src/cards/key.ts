@@ -37,7 +37,7 @@ export function cardKey(data: CardData, txs: readonly TxRef[] = []): string | un
             if (data.sourceTxHash) return `bridge:${data.sourceChain}:${normalizeHash(data.sourceTxHash)}`;
             return txKey('bridge', primaryTx(txs, 'source'));
         case 'token.launch':
-            return `launch:${data.chain}:${data.token.address}`;
+            return `launch:${data.chain}:${normalizeHash(data.token.address)}`;
         case 'automation':
             return data.kind === 'copytrade' && data.copytrade ? `copytrade:${data.copytrade.chain}:${normalizeHash(data.copytrade.target)}` : undefined;
         case 'generic':

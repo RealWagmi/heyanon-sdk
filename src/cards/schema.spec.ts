@@ -1,6 +1,7 @@
 import { Chain } from '../blockchain';
 import { CONDITIONS, DRAFTS } from './__fixtures__/drafts';
 import {
+    automationCardSchema,
     cardActionSchema,
     cardDataSchema,
     cardDraftSchema,
@@ -77,6 +78,13 @@ describe('card data and draft schemas', () => {
         expect(cardDataSchema.safeParse({ ...DRAFTS['venue.order'], leverage: '-10' }).success).toBe(false);
     });
 
+    it('requires an integer amount when decimals is set', () => {
+        expect(cardDataSchema.safeParse({ ...DRAFTS['tx.transfer'], sent: { amount: '1500000', symbol: 'USDC', decimals: 6 } }).success).toBe(true);
+        expect(cardDataSchema.safeParse({ ...DRAFTS['tx.transfer'], sent: { amount: '1.5', symbol: 'USDC', decimals: 6 } }).success).toBe(false);
+        expect(strictCardDraftSchema.safeParse({ ...DRAFTS['tx.transfer'], sent: { amount: '1.5', symbol: 'USDC', decimals: 6 } }).success).toBe(false);
+        expect(cardDataSchema.safeParse({ ...DRAFTS['perp.position'], action: 'close', pnl: { amount: '-1.5', symbol: 'USDC', decimals: 6 } }).success).toBe(false);
+    });
+
     it('allows a signed amount only where a value can be negative', () => {
         expect(cardDataSchema.safeParse({ ...DRAFTS['perp.position'], action: 'close', pnl: { amount: '-12.5', symbol: 'USDC' } }).success).toBe(true);
         expect(cardDataSchema.safeParse({ ...DRAFTS['perp.position'], sizeDelta: '-1' }).success).toBe(true);
@@ -118,6 +126,8 @@ describe('card data and draft schemas', () => {
         ).toBe(true);
         expect(cardDataSchema.safeParse({ type: 'automation', kind: 'trigger', summary: 'Custom check' }).success).toBe(true);
         expect(strictCardDraftSchema.safeParse({ ...DRAFTS.automation, plan: undefined }).success).toBe(false);
+        expect(automationCardSchema.safeParse({ ...DRAFTS.automation, plan: undefined }).success).toBe(false);
+        expect(automationCardSchema.safeParse(DRAFTS.automation).success).toBe(true);
     });
 
     it.each(Object.keys(CONDITIONS) as (keyof typeof CONDITIONS)[])('accepts a %s condition and rejects it without its discriminator', kind => {
