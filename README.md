@@ -38,6 +38,8 @@ return withCards(toResult(`Swapped ${amountIn} ETH for ${amountOut} USDC on Arbi
     allowed only where a value can be negative (`pnl`, `sizeDelta`, condition thresholds).
 -   Every token needs a `symbol` or an `address`; `logoURI` and `priceUsd` are optional display hints. Off-chain venues
     use `venue` instead of `chain`. Links are `http(s)` or `ipfs` only; clients re-check the scheme before opening them.
+-   Helpers for adapters: `cardDecimal` (tolerant `toDecimalString`), `cardChain`, `cardToken` (from any token-like
+    object, with `logoURI` / `priceUsd` hints and base-unit scaling), `txRef`, `presentCards`.
 -   `cardKey(data, txs)` identifies the object a card describes (order, transfer, position, transaction) so a later card
     can supersede an earlier one; `cardPredecessorKey` follows `replacesOrderId` for edited orders. `parseChatCards`
     parses an array leniently, degrading cards of an unknown type to `generic` instead of failing the whole list.
