@@ -19,7 +19,7 @@ const card = {
     type: 'tx.swap',
     data: DRAFTS['tx.swap'],
     state: 'complete',
-    wallet: '0x4b9d8e1c2a3f4e5d6c7b8a9f0e1d2c3b4a5f6e7d',
+    wallets: ['0x4b9d8e1c2a3f4e5d6c7b8a9f0e1d2c3b4a5f6e7d'],
     txs: [{ chain: Chain.ARBITRUM, hash: '0x7c1e5a9b2f', url: 'https://arbiscan.io/tx/0x7c1e5a9b2f', role: 'action' }],
     actions: [{ kind: 'execute', id: 'cancel', label: 'Cancel', handle: 'v1:kR3mQx9ZtP2aW7Lf', confirm: 'Cancel?', expiresAt: '2026-10-14T12:52:09.004Z' }],
     group: { id: 'grp_1', kind: 'pair' },
@@ -236,18 +236,18 @@ describe('card envelope', () => {
         const generic = { type: 'generic', title: 'Unsupported card: tx.options', rows: [] };
         expect(parseCards([newer])).toEqual([{ ...newer, type: 'generic', data: generic }]);
 
-        const [degraded] = parseCards([{ ...newer, state: 'exploded', wallet: 7, txs: 'x', actions: [{ kind: 'teleport' }, card.actions[0]], group: { id: 'g', kind: 'tuple' } }]);
+        const [degraded] = parseCards([{ ...newer, state: 'exploded', wallets: [7, '0xabc'], txs: 'x', actions: [{ kind: 'teleport' }, card.actions[0]], group: { id: 'g', kind: 'tuple' } }]);
         expect(degraded).toEqual({
             id: 'crd_new',
             type: 'generic',
             data: generic,
             state: 'unknown',
+            wallets: ['0xabc'],
             txs: [],
             actions: [card.actions[0]],
             notes: ['Partial fill'],
             taskId: 'task_1',
         });
-        expect(degraded).not.toHaveProperty('wallet');
         expect(degraded).not.toHaveProperty('group');
         expect(cardSchema.safeParse(degraded).success).toBe(true);
     });

@@ -26,7 +26,7 @@ return withCards(toResult(`Swapped ${amountIn} ETH for ${amountOut} USDC on Arbi
     `cards` from the result before it reaches the model or the conversation context.
 -   A draft carries only what the tool knows: `CardData` (one discriminated union over `type`), optional button intents
     (`actions`), hashes sent outside `sendTransactions` (`txRefs`), a `group` for several cards from one call and `notes`.
-    The chat server wraps it in a `Card` envelope: it adds the id, wallet, captured transactions and state, and turns
+    The chat server wraps it in a `Card` envelope: it adds the id, the wallets it concerns, captured transactions and state, and turns
     intents into opaque handles.
 -   Apart from `done` on a used execute action, a `Card` changes only while its `state` is `pending` and is finalised
     under the same id; a later change to the same object is a new card. Pressing an execute button appends its result

@@ -36,7 +36,7 @@ import {
  *  - `CardData`  — the facts a tool knows (one discriminated union, shared by every layer);
  *  - `CardDraft` — what an adapter returns in `FunctionReturn.cards` (`CardData` + button intents + extra tx refs);
  *  - `Card`      — what the chat server stores and sends to clients (`CardData` wrapped in an envelope with id,
- *                  state, wallet, captured transactions and buttons resolved to opaque handles).
+ *                  state, wallets, captured transactions and buttons resolved to opaque handles).
  *
  * Apart from `done` on a used execute action, a card changes only while its `state` is `pending` and is finalised under
  * the same id; a later change to the same object is a new card, and clients keep older cards live with an overlay
@@ -861,10 +861,8 @@ export const cardObjectSchema = z.object({
     type: cardTypeSchema,
     data: cardDataSchema,
     state: cardStateSchema,
-    wallet: z
-        .string()
-        .max(128)
-        .optional(),
+    /** the request wallets the card concerns; empty for account-level venues and generic cards */
+    wallets: z.array(z.string().min(1).max(128)).max(8),
     /** Captured `sendTransactions` hashes plus the draft's `txRefs` */
     txs: z.array(txRefSchema),
     actions: z.array(cardActionSchema),
@@ -922,7 +920,7 @@ export function parseCards(raw: unknown): Card[] {
     return out;
 }
 
-const FALLBACK_OPTIONAL_KEYS = ['wallet', 'group', 'notes', 'taskId'] as const;
+const FALLBACK_OPTIONAL_KEYS = ['group', 'notes', 'taskId'] as const;
 
 /** The `generic` stand-in for a card this build cannot read, or `undefined` when there is no envelope to keep. */
 function genericFallback(item: unknown): Card | undefined {
@@ -938,6 +936,7 @@ function genericFallback(item: unknown): Card | undefined {
         type: 'generic',
         data: { type: 'generic', title: `Unsupported card: ${typeName}`.slice(0, 120), rows: [] },
         state: state.success ? state.data : 'unknown',
+        wallets: validItems(envelope.wallets, walletSchema),
         txs: validItems(envelope.txs, txRefSchema),
         actions: validItems(envelope.actions, cardActionSchema),
     };
@@ -947,6 +946,8 @@ function genericFallback(item: unknown): Card | undefined {
     }
     return card;
 }
+
+const walletSchema: Schema<string> = z.string().min(1).max(128);
 
 /** The entries of `value` that pass `schema`; `[]` when `value` is not an array. */
 function validItems<T>(value: unknown, schema: Schema<T>): T[] {

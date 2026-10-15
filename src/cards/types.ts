@@ -444,7 +444,7 @@ export interface CardDraftExtras {
     notes?: string[];
 }
 
-/** What an adapter returns in `FunctionReturn.cards`. No id, wallet, state or captured hashes: the tool does not know them. */
+/** What an adapter returns in `FunctionReturn.cards`. No id, wallets, state or captured hashes: the tool does not know them. */
 export type CardDraft = CardData & CardDraftExtras;
 
 /** Narrow `CardDraft` by its `type` discriminator. */
@@ -467,7 +467,11 @@ export interface Card {
     type: CardType;
     data: CardData;
     state: CardState;
-    wallet?: string;
+    /**
+     * The request wallets the card concerns: the signer of an on-chain action, both of the user's wallets on a bridge between
+     * chain families, every wallet an automation is bound to. Empty for account-level venues (the CEXes) and generic cards.
+     */
+    wallets: string[];
     /** Captured `sendTransactions` hashes plus the draft's `txRefs` */
     txs: TxRef[];
     actions: CardAction[];
