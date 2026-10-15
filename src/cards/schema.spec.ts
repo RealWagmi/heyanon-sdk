@@ -250,6 +250,12 @@ describe('card envelope', () => {
         });
         expect(degraded).not.toHaveProperty('group');
         expect(cardSchema.safeParse(degraded).success).toBe(true);
+
+        // the fallback keeps within the envelope's own limits: nine valid wallets become the first eight
+        const wallets = Array.from({ length: 9 }, (_, index) => `0x${String(index).padStart(40, '0')}`);
+        const [crowded] = parseCards([{ ...newer, wallets }]);
+        expect(crowded.wallets).toEqual(wallets.slice(0, 8));
+        expect(cardSchema.safeParse(crowded).success).toBe(true);
     });
 });
 

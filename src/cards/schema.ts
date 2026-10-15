@@ -856,13 +856,17 @@ export const cardActionSchema: Schema<CardAction> = lenient.action;
  * `id` is stable: a pending card is finalised under it and action handles point at it. Kept as a plain `ZodObject`
  * so a server can `.extend()` it with its own fields.
  */
+/** a request has at most a handful of wallets; the envelope never carries more */
+const MAX_CARD_WALLETS = 8;
+const walletSchema: Schema<string> = z.string().min(1).max(128);
+
 export const cardObjectSchema = z.object({
     id: text(64),
     type: cardTypeSchema,
     data: cardDataSchema,
     state: cardStateSchema,
     /** the request wallets the card concerns; empty for account-level venues and generic cards */
-    wallets: z.array(z.string().min(1).max(128)).max(8),
+    wallets: z.array(walletSchema).max(MAX_CARD_WALLETS),
     /** Captured `sendTransactions` hashes plus the draft's `txRefs` */
     txs: z.array(txRefSchema),
     actions: z.array(cardActionSchema),
@@ -936,7 +940,7 @@ function genericFallback(item: unknown): Card | undefined {
         type: 'generic',
         data: { type: 'generic', title: `Unsupported card: ${typeName}`.slice(0, 120), rows: [] },
         state: state.success ? state.data : 'unknown',
-        wallets: validItems(envelope.wallets, walletSchema),
+        wallets: validItems(envelope.wallets, walletSchema).slice(0, MAX_CARD_WALLETS),
         txs: validItems(envelope.txs, txRefSchema),
         actions: validItems(envelope.actions, cardActionSchema),
     };
@@ -946,8 +950,6 @@ function genericFallback(item: unknown): Card | undefined {
     }
     return card;
 }
-
-const walletSchema: Schema<string> = z.string().min(1).max(128);
 
 /** The entries of `value` that pass `schema`; `[]` when `value` is not an array. */
 function validItems<T>(value: unknown, schema: Schema<T>): T[] {
