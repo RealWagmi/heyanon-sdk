@@ -3,13 +3,13 @@ import { Chain } from '../blockchain';
 import {
     AutomationCardData,
     BridgeCardData,
+    Card,
     CardAction,
     CardData,
     CardDraft,
     CardIntent,
     CardToken,
     CardTokenRef,
-    ChatCard,
     ClaimCardData,
     Condition,
     DcaPlan,
@@ -35,18 +35,18 @@ import {
  * Layers:
  *  - `CardData`  — the facts a tool knows (one discriminated union, shared by every layer);
  *  - `CardDraft` — what an adapter returns in `FunctionReturn.cards` (`CardData` + button intents + extra tx refs);
- *  - `ChatCard`  — what the chat server stores and sends to clients (`CardData` wrapped in an envelope with id,
+ *  - `Card`      — what the chat server stores and sends to clients (`CardData` wrapped in an envelope with id,
  *                  state, wallet, captured transactions and buttons resolved to opaque handles).
  *
- * Fields are only added within a version, and every new field is optional. A breaking change is a new card type
- * or a new `CARD_VERSION`.
+ * Apart from `done` on a used execute action, a card changes only while its `state` is `pending` and is finalised under
+ * the same id; a later change to the same object is a new card, and clients keep older cards live with an overlay
+ * keyed by `cardKey`. Fields are only added, and every new field is optional; a breaking change is a new card type.
  *
  * Every schema exists in two builds: lenient (unknown keys are stripped at every depth; used on the wire and by
  * clients) and strict (unknown keys are rejected at every depth; used by `withCards` in tests so a typo fails
  * loudly). Both builds come from one factory so they cannot drift. The readable contract is in ./types.ts; the
  * parity block at the bottom of this file fails `tsc` if a schema and its interface disagree.
  */
-export const CARD_VERSION = 1 as const;
 
 /** Every card type. Types describe the shape of the card, not the protocol: `venue` / `protocol` are fields inside `data`. */
 export const CARD_TYPES = [
@@ -71,7 +71,10 @@ export const VENUES = ['binance', 'bybit', 'kraken', 'mexc', 'okx', 'hyperliquid
 
 export const ORDER_STATUSES = ['submitted', 'open', 'pending_trigger', 'partially_filled', 'filled', 'canceled', 'rejected', 'expired'] as const;
 
-/** Card state as the server sets it when the card is written. Later changes arrive as a new card that `supersedes` this one. */
+/**
+ * Card state as the server sets it. Only a `pending` card changes, finalised under the same id; every other state is
+ * final, except that the server still sets `done` on an execute action once its handle is used.
+ */
 export const CARD_STATES = ['pending', 'complete', 'failed', 'blocked', 'needs_input', 'unknown'] as const;
 
 /** Role of a transaction inside one card: `approve` / `close` are auxiliary, `action` is the operation itself. */
@@ -597,7 +600,7 @@ function build(mode: Mode) {
                 .max(128)
                 .optional(),
         },
-        /** Triggers, DCA plans and copy-trading rules. `taskId`, `seriesId` and progress are set by the server, not the tool. */
+        /** Triggers, DCA plans and copy-trading rules. The server, not the tool, sets `taskId` on the envelope; later progress arrives as new cards with that `taskId`. */
         automation: {
             type: z.literal('automation'),
             kind: z.enum(['trigger', 'dca', 'copytrade']),
@@ -676,7 +679,20 @@ function build(mode: Mode) {
 
     const actionId = text(64);
     const action = z.discriminatedUnion('kind', [
-        obj({ kind: z.literal('execute'), id: actionId, label: text(60), handle: text(128), confirm: text(200), danger: z.boolean().optional(), expiresAt: z.string().max(60) }),
+        obj({
+            kind: z.literal('execute'),
+            id: actionId,
+            label: text(60),
+            handle: text(128),
+            confirm: text(200),
+            danger: z.boolean().optional(),
+            expiresAt: z.string().max(60),
+            /**
+             * The handle was used: its result is a new card next to this one. Set on the source card in any state, a
+             * final one included, so clients must not cache that card as immutable; they show the button disabled.
+             */
+            done: z.boolean().optional(),
+        }),
         obj({ kind: z.literal('read'), id: actionId, label: text(60), read: text(60), params: z.record(z.string(), z.string()) }),
         obj({ kind: z.literal('navigate'), id: actionId, label: text(60), target: text(120) }),
         obj({ kind: z.literal('draft'), id: actionId, label: text(60), text: text(2000) }),
@@ -837,11 +853,10 @@ export const cardActionSchema: Schema<CardAction> = lenient.action;
 
 /**
  * The envelope the chat server writes and clients read. Cards live inside a turn, so there is no message id here;
- * `id` is the stable reference for `supersedes`, live overlays and action handles. Kept as a plain `ZodObject` so a
- * server can `.extend()` it with its own fields.
+ * `id` is stable: a pending card is finalised under it and action handles point at it. Kept as a plain `ZodObject`
+ * so a server can `.extend()` it with its own fields.
  */
-export const chatCardObjectSchema = z.object({
-    version: z.literal(CARD_VERSION),
+export const cardObjectSchema = z.object({
     id: text(64),
     type: cardTypeSchema,
     data: cardDataSchema,
@@ -864,25 +879,19 @@ export const chatCardObjectSchema = z.object({
         })
         .optional(),
     notes: z.array(z.string().max(300)).optional(),
-    /** Id of the card this one replaces */
-    supersedes: text(64).optional(),
+    /** Automation task the card reports on, set by the server */
     taskId: z
         .string()
         .max(128)
         .optional(),
-    seriesId: z
-        .string()
-        .max(128)
-        .optional(),
-    createdAt: z.string().max(60),
 });
 
 /**
- * `chatCardObjectSchema` plus the rules that span fields. The draft-only check runs on the RAW input (before unknown
+ * `cardObjectSchema` plus the rules that span fields. The draft-only check runs on the RAW input (before unknown
  * keys are stripped): a raw draft must never be stored as `data`, because its execute intents carry protocol /
  * function / args.
  */
-export const chatCardSchema: Schema<ChatCard> = z.preprocess(
+export const cardSchema: Schema<Card> = z.preprocess(
     (raw, ctx) => {
         const data = (raw as { data?: unknown } | null)?.data;
         if (data && typeof data === 'object') {
@@ -892,48 +901,74 @@ export const chatCardSchema: Schema<ChatCard> = z.preprocess(
         }
         return raw;
     },
-    chatCardObjectSchema.superRefine((card, ctx) => {
+    cardObjectSchema.superRefine((card, ctx) => {
         if (card.type !== card.data.type) ctx.addIssue({ code: 'custom', path: ['type'], message: 'type must match data.type' });
     }),
 );
 
 /**
  * Tolerant parse for clients: validates cards one by one, so one unknown or malformed card never hides the others.
- * A card with a recognizable envelope but an unknown `type` or `data` (a newer server) degrades to a `generic` card;
- * anything else is dropped.
+ * An entry with a valid `id` and a `data` object that still fails (an unknown `type` from a newer server, a malformed
+ * `data`) degrades to a `generic` card that keeps the envelope fields that do validate; anything else is dropped.
  */
-export function parseChatCards(raw: unknown): ChatCard[] {
+export function parseCards(raw: unknown): Card[] {
     if (!Array.isArray(raw)) return [];
-    const out: ChatCard[] = [];
+    const out: Card[] = [];
     for (const item of raw) {
-        const parsed = chatCardSchema.safeParse(item);
-        if (parsed.success) {
-            out.push(parsed.data);
-            continue;
-        }
-        const envelope = item as { id?: unknown; createdAt?: unknown; type?: unknown; data?: { type?: unknown } };
-        if (typeof envelope?.id !== 'string' || typeof envelope.createdAt !== 'string') continue;
-        const typeName = typeof envelope.data?.type === 'string' ? envelope.data.type : typeof envelope.type === 'string' ? envelope.type : 'unknown';
-        out.push({
-            version: CARD_VERSION,
-            id: envelope.id,
-            type: 'generic',
-            data: { type: 'generic', title: `Unsupported card: ${typeName}`.slice(0, 120), rows: [] },
-            state: 'unknown',
-            txs: [],
-            actions: [],
-            createdAt: envelope.createdAt,
-        });
+        const parsed = cardSchema.safeParse(item);
+        const card = parsed.success ? parsed.data : genericFallback(item);
+        if (card) out.push(card);
+    }
+    return out;
+}
+
+const FALLBACK_OPTIONAL_KEYS = ['wallet', 'group', 'notes', 'taskId'] as const;
+
+/** The `generic` stand-in for a card this build cannot read, or `undefined` when there is no envelope to keep. */
+function genericFallback(item: unknown): Card | undefined {
+    if (typeof item !== 'object' || item === null) return undefined;
+    const envelope = item as Record<string, unknown>;
+    const data = envelope.data as { type?: unknown } | null | undefined;
+    const id = cardObjectSchema.shape.id.safeParse(envelope.id);
+    if (!id.success || typeof data !== 'object' || data === null || Array.isArray(data)) return undefined;
+    const typeName = typeof data.type === 'string' ? data.type : typeof envelope.type === 'string' ? envelope.type : 'unknown';
+    const state = cardStateSchema.safeParse(envelope.state);
+    const card: Card = {
+        id: id.data,
+        type: 'generic',
+        data: { type: 'generic', title: `Unsupported card: ${typeName}`.slice(0, 120), rows: [] },
+        state: state.success ? state.data : 'unknown',
+        txs: validItems(envelope.txs, txRefSchema),
+        actions: validItems(envelope.actions, cardActionSchema),
+    };
+    for (const key of FALLBACK_OPTIONAL_KEYS) {
+        const field = cardObjectSchema.shape[key].safeParse(envelope[key]);
+        if (field.success && field.data !== undefined) Object.assign(card, { [key]: field.data });
+    }
+    return card;
+}
+
+/** The entries of `value` that pass `schema`; `[]` when `value` is not an array. */
+function validItems<T>(value: unknown, schema: Schema<T>): T[] {
+    if (!Array.isArray(value)) return [];
+    const out: T[] = [];
+    for (const entry of value) {
+        const parsed = schema.safeParse(entry);
+        if (parsed.success) out.push(parsed.data);
     }
     return out;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Compile-time parity: the declared interfaces in ./types.ts must be identical to what the schemas infer, in both
-// builds. A drift fails `tsc` here instead of surfacing as a wrong declaration file.
+// builds. A drift fails `tsc` here instead of surfacing as a wrong declaration file. `Mutual` checks assignability
+// both ways (types and optionality), then repeats that with every key made required at every depth (`Exact`): plain
+// assignability lets an optional key that exists on one side only through, `Exact` does not.
 // ---------------------------------------------------------------------------------------------------------------------
 
-type Mutual<A, B> = [A] extends [B] ? ([B] extends [A] ? true : false) : false;
+type Exact<T> = T extends readonly (infer U)[] ? Exact<U>[] : T extends object ? { [K in keyof T]-?: Exact<Exclude<T[K], undefined>> } : T;
+type TwoWay<A, B> = [A] extends [B] ? ([B] extends [A] ? true : false) : false;
+type Mutual<A, B> = TwoWay<A, B> extends true ? TwoWay<Exact<A>, Exact<B>> : false;
 type L = typeof lenient;
 type S = typeof strict;
 type LenientDrafts = z.infer<L['drafts'][keyof L['drafts']]>;
@@ -964,6 +999,6 @@ const typeParity: [
     Mutual<z.infer<L['action']>, CardAction>,
     Mutual<LenientDrafts, CardDraft>,
     Mutual<StrictDrafts, CardDraft>,
-    Mutual<z.infer<typeof chatCardObjectSchema>, ChatCard>,
+    Mutual<z.infer<typeof cardObjectSchema>, Card>,
 ] = [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true];
 void typeParity;

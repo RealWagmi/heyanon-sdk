@@ -1,16 +1,17 @@
 import { CardData, TxRef } from './types';
 
 /**
- * Identity key of the object a card describes, so a later card about the same order, transfer, position or
- * transaction can `supersede` an earlier one. Shared by the chat server (to look up the predecessor) and by
- * clients (to merge live status onto the right card).
+ * Identity key of the object a card describes (order, transfer, position, transaction). The data and state of a final
+ * card are never rewritten (only `done` on a used execute action changes): a later change to the same object is a new
+ * card, and clients key their live-status overlay on this value to keep the older cards about that object current.
+ * The chat server may use it to relate cards as well.
  *
  * Returns `undefined` when the card has nothing stable to key on:
  * - on-chain cards key on their `action` transaction, falling back to any non-approval hash, then to the first hash;
  * - venue orders need an `orderId`, venue transfers a `transferId`;
  * - positions key on `positionId`, else on venue + symbol + side (+ vault account). Without a `positionId` that key
- *   names a reusable slot, so the server must stop a supersede chain at a terminal card (close, filled, canceled)
- *   rather than let a new `open` supersede last week's closed position;
+ *   names a reusable slot, so an overlay must stop at a terminal card (close, filled, canceled) rather than carry a
+ *   new `open` onto last week's closed position;
  * - triggers and DCA are keyed by the server-assigned `taskId`, so they return `undefined`; copy-trading rules have
  *   no task id and key on chain + target;
  * - `generic` cards are never keyed.
@@ -48,9 +49,9 @@ export function cardKey(data: CardData, txs: readonly TxRef[] = []): string | un
 }
 
 /**
- * Key of the card this one replaces when the object itself changed identity: an edited order that received a new
- * id links back through `replacesOrderId`. Falls back to `cardKey`, so it can be used wherever a predecessor is
- * looked up.
+ * Key of the object this card continues when the object itself changed identity: an edited order that received a
+ * new id links back through `replacesOrderId` to the cards of the original order. Falls back to `cardKey`, so it can
+ * be used wherever a predecessor is looked up.
  */
 export function cardPredecessorKey(data: CardData, txs: readonly TxRef[] = []): string | undefined {
     if (data.type === 'venue.order' && data.replacesOrderId) return orderKey(data.venue, data.market, data.symbol, data.replacesOrderId);

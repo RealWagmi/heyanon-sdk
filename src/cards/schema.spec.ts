@@ -6,16 +6,15 @@ import {
     cardDataSchema,
     cardDraftSchema,
     cardIntentSchema,
-    chatCardObjectSchema,
-    chatCardSchema,
+    cardObjectSchema,
+    cardSchema,
     conditionSchema,
-    parseChatCards,
+    parseCards,
     CARD_TYPES,
     strictCardDraftSchema,
 } from './schema';
 
-const chatCard = {
-    version: 1,
+const card = {
     id: 'crd_01JA7Q3M8K2V9X4N6P1R5T8W0Y',
     type: 'tx.swap',
     data: DRAFTS['tx.swap'],
@@ -24,7 +23,6 @@ const chatCard = {
     txs: [{ chain: Chain.ARBITRUM, hash: '0x7c1e5a9b2f', url: 'https://arbiscan.io/tx/0x7c1e5a9b2f', role: 'action' }],
     actions: [{ kind: 'execute', id: 'cancel', label: 'Cancel', handle: 'v1:kR3mQx9ZtP2aW7Lf', confirm: 'Cancel?', expiresAt: '2026-10-14T12:52:09.004Z' }],
     group: { id: 'grp_1', kind: 'pair' },
-    createdAt: '2026-10-13T12:52:09.004Z',
 };
 
 describe('card data and draft schemas', () => {
@@ -169,38 +167,89 @@ describe('card data and draft schemas', () => {
     });
 });
 
-describe('chat card envelope', () => {
-    it('accepts a chat card and requires type to match data.type', () => {
-        expect(chatCardSchema.safeParse(chatCard).success).toBe(true);
-        expect(chatCardSchema.safeParse({ ...chatCard, type: 'tx.bridge' }).success).toBe(false);
-        expect(chatCardSchema.safeParse({ ...chatCard, version: 2 }).success).toBe(false);
-        expect(chatCardSchema.safeParse({ ...chatCard, group: { id: 'g', kind: 'oco' } }).success).toBe(true);
-        expect(chatCardSchema.safeParse({ ...chatCard, group: { id: 'g', kind: 'tuple' } }).success).toBe(false);
+describe('card envelope', () => {
+    it('accepts a card and requires type to match data.type', () => {
+        expect(cardSchema.safeParse(card).success).toBe(true);
+        expect(cardSchema.safeParse({ ...card, type: 'tx.bridge' }).success).toBe(false);
+        expect(cardSchema.safeParse({ ...card, group: { id: 'g', kind: 'oco' } }).success).toBe(true);
+        expect(cardSchema.safeParse({ ...card, group: { id: 'g', kind: 'tuple' } }).success).toBe(false);
+    });
+
+    it('strips the removed envelope fields like any other unknown key', () => {
+        const legacy = { ...card, version: 1, supersedes: 'crd_old', seriesId: 'series_1', createdAt: '2026-10-13T12:52:09.004Z' };
+        const parsed = cardSchema.safeParse(legacy);
+        expect(parsed.success).toBe(true);
+        for (const key of ['version', 'supersedes', 'seriesId', 'createdAt']) expect(parsed.data).not.toHaveProperty(key);
     });
 
     it('never accepts a raw draft as data, so execute intents cannot leak to clients', () => {
-        const withDraftExtras = { ...chatCard, type: 'venue.order', data: DRAFTS['venue.order'] };
-        expect(chatCardSchema.safeParse(withDraftExtras).success).toBe(false);
+        const withDraftExtras = { ...card, type: 'venue.order', data: DRAFTS['venue.order'] };
+        expect(cardSchema.safeParse(withDraftExtras).success).toBe(false);
         const { actions: _intents, ...data } = DRAFTS['venue.order'];
-        expect(chatCardSchema.safeParse({ ...chatCard, type: 'venue.order', data }).success).toBe(true);
+        expect(cardSchema.safeParse({ ...card, type: 'venue.order', data }).success).toBe(true);
     });
 
     it('rejects an execute action without a handle', () => {
         const leaked = { kind: 'execute', id: 'cancel', label: 'Cancel', protocol: 'okx', functionName: 'cancelOrder', args: {}, confirm: 'Cancel?', expiresAt: 'x' };
-        expect(chatCardSchema.safeParse({ ...chatCard, actions: [leaked] }).success).toBe(false);
+        expect(cardSchema.safeParse({ ...card, actions: [leaked] }).success).toBe(false);
+    });
+
+    it('marks a used execute action with an optional done flag', () => {
+        const [execute] = card.actions;
+        expect(cardActionSchema.safeParse(execute).success).toBe(true);
+        expect(cardActionSchema.safeParse({ ...execute, done: true }).success).toBe(true);
+        expect(cardActionSchema.safeParse({ ...execute, done: 'yes' }).success).toBe(false);
+        const parsed = cardSchema.safeParse({ ...card, actions: [{ ...execute, done: true }] });
+        expect(parsed.data?.actions[0]).toMatchObject({ kind: 'execute', handle: execute.handle, done: true });
     });
 
     it('exposes the plain object schema so servers can extend the envelope', () => {
-        const extended = chatCardObjectSchema.extend({ turnId: chatCardObjectSchema.shape.id });
-        expect(extended.safeParse({ ...chatCard, turnId: 'turn_1' }).success).toBe(true);
+        const extended = cardObjectSchema.extend({ turnId: cardObjectSchema.shape.id });
+        expect(extended.safeParse({ ...card, turnId: 'turn_1' }).success).toBe(true);
     });
 
-    it('parseChatCards keeps valid cards, degrades unknown types to generic and drops garbage', () => {
-        const newer = { ...chatCard, id: 'crd_new', type: 'tx.options', data: { type: 'tx.options', strike: '3000' } };
-        const parsed = parseChatCards([chatCard, newer, { nope: true }, 'x', null]);
-        expect(parsed.map(c => c.id)).toEqual([chatCard.id, 'crd_new']);
-        expect(parsed[1]).toMatchObject({ type: 'generic', state: 'unknown', data: { type: 'generic', title: 'Unsupported card: tx.options' } });
-        expect(parseChatCards(undefined)).toEqual([]);
+    it('parseCards keeps valid cards, degrades unknown types to generic and drops garbage', () => {
+        const newer = { ...card, id: 'crd_new', type: 'tx.options', data: { type: 'tx.options', strike: '3000' } };
+        const parsed = parseCards([card, newer, { nope: true }, 'x', null]);
+        expect(parsed.map(c => c.id)).toEqual([card.id, 'crd_new']);
+        expect(parsed[1]).toMatchObject({ type: 'generic', state: 'complete', data: { type: 'generic', title: 'Unsupported card: tx.options' } });
+        expect(parseCards(undefined)).toEqual([]);
+    });
+
+    it('parseCards drops an entry without a valid id or a data object', () => {
+        const { id: _id, ...withoutId } = card;
+        const unknownType = { ...card, type: 'tx.options' };
+        expect(parseCards([withoutId, { ...card, id: 42 }, { ...unknownType, data: undefined }, { ...unknownType, data: 'x' }, { ...unknownType, data: [] }])).toEqual([]);
+        const tooLong = 'x'.repeat(65);
+        expect(
+            parseCards([
+                { ...unknownType, id: tooLong },
+                { ...card, id: tooLong },
+                { ...unknownType, id: '' },
+            ]),
+        ).toEqual([]);
+        expect(parseCards([{ ...unknownType, id: 'x'.repeat(64) }]).map(c => c.type)).toEqual(['generic']);
+    });
+
+    it('parseCards keeps the envelope fields of a degraded card that still validate', () => {
+        const newer = { ...card, id: 'crd_new', type: 'tx.options', data: { type: 'tx.options', strike: '3000' }, notes: ['Partial fill'], taskId: 'task_1' };
+        const generic = { type: 'generic', title: 'Unsupported card: tx.options', rows: [] };
+        expect(parseCards([newer])).toEqual([{ ...newer, type: 'generic', data: generic }]);
+
+        const [degraded] = parseCards([{ ...newer, state: 'exploded', wallet: 7, txs: 'x', actions: [{ kind: 'teleport' }, card.actions[0]], group: { id: 'g', kind: 'tuple' } }]);
+        expect(degraded).toEqual({
+            id: 'crd_new',
+            type: 'generic',
+            data: generic,
+            state: 'unknown',
+            txs: [],
+            actions: [card.actions[0]],
+            notes: ['Partial fill'],
+            taskId: 'task_1',
+        });
+        expect(degraded).not.toHaveProperty('wallet');
+        expect(degraded).not.toHaveProperty('group');
+        expect(cardSchema.safeParse(degraded).success).toBe(true);
     });
 });
 

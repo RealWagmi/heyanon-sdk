@@ -1,12 +1,11 @@
 import { Chain } from '../blockchain';
-import { AMOUNT_UNITS, CARD_GROUP_KINDS, CARD_STATES, CARD_TYPES, CARD_VERSION, ORDER_STATUSES, TX_ROLES, VENUES } from './schema';
+import { AMOUNT_UNITS, CARD_GROUP_KINDS, CARD_STATES, CARD_TYPES, ORDER_STATUSES, TX_ROLES, VENUES } from './schema';
 
 /*
  * The readable card contract. Every schema in ./schema.ts is annotated with one of these types, and a compile-time
  * parity check at the bottom of schema.ts fails the build if an interface and the schema that implements it drift.
  */
 
-export type CardVersion = typeof CARD_VERSION;
 export type CardType = typeof CARD_TYPES[number];
 export type Venue = typeof VENUES[number];
 export type OrderStatus = typeof ORDER_STATUSES[number];
@@ -355,7 +354,7 @@ export interface VenueTransferCardData {
     txHash?: string;
 }
 
-/** Triggers, DCA plans and copy-trading rules. `taskId`, `seriesId` and progress are set by the server, not the tool. */
+/** Triggers, DCA plans and copy-trading rules. The server, not the tool, sets `taskId` on the envelope; later progress arrives as new cards with that `taskId`. */
 export interface AutomationCardData {
     type: 'automation';
     kind: 'trigger' | 'dca' | 'copytrade';
@@ -412,7 +411,20 @@ export type CardIntent =
 
 /** A button as the client receives it: `execute` carries an opaque single-use handle instead of protocol / function / args. */
 export type CardAction =
-    | { kind: 'execute'; id: string; label: string; handle: string; confirm: string; danger?: boolean; expiresAt: string }
+    | {
+          kind: 'execute';
+          id: string;
+          label: string;
+          handle: string;
+          confirm: string;
+          danger?: boolean;
+          expiresAt: string;
+          /**
+           * The handle was used: its result is a new card next to this one. Set on the source card in any state, a
+           * final one included, so clients must not cache that card as immutable; they show the button disabled.
+           */
+          done?: boolean;
+      }
     | { kind: 'read'; id: string; label: string; read: string; params: Record<string, string> }
     | { kind: 'navigate'; id: string; label: string; target: string }
     | { kind: 'draft'; id: string; label: string; text: string };
@@ -439,13 +451,18 @@ export type CardDraft = CardData & CardDraftExtras;
 export type CardDraftOf<T extends CardType> = Extract<CardDraft, { type: T }>;
 
 /**
- * What the chat server stores and sends: the envelope around `CardData`. Immutable once the turn is done; a later
- * change is a new card that `supersedes` this one. Cards live inside a turn, so there is no message id here.
- * `type` mirrors `data.type` for indexing; to narrow in TypeScript switch on `card.data.type` or use `ChatCardOf`.
+ * What the chat server stores and sends: the envelope around `CardData`. Cards live inside a turn, so there is no
+ * message id here.
+ * - Apart from `done` on a used execute action, a card changes only while `state` is `pending`, and is finalised under
+ *   the same id. A later change to the same object is a new card; keeping older cards' status live is the client's
+ *   job (an overlay keyed by `cardKey`).
+ * - Pressing an execute button appends its result as a new card next to this one and sets `done: true` on this
+ *   card's execute actions, whatever this card's state: a `complete` order with a Cancel button is final, yet its
+ *   button still changes. Clients must not cache such a card as immutable.
+ * `type` mirrors `data.type` for indexing; to narrow in TypeScript switch on `card.data.type` or use `CardOf`.
  */
-export interface ChatCard {
-    version: CardVersion;
-    /** Stable id: `supersedes`, live overlays and action handles point at it */
+export interface Card {
+    /** Stable id: a pending card is finalised under it, and action handles point at it */
     id: string;
     type: CardType;
     data: CardData;
@@ -456,12 +473,9 @@ export interface ChatCard {
     actions: CardAction[];
     group?: { id: string; kind: CardGroupKind; title?: string };
     notes?: string[];
-    /** Id of the card this one replaces */
-    supersedes?: string;
+    /** Automation task the card reports on, set by the server */
     taskId?: string;
-    seriesId?: string;
-    createdAt: string;
 }
 
-/** `ChatCard` narrowed to one card type, with `data` narrowed accordingly. */
-export type ChatCardOf<T extends CardType> = Omit<ChatCard, 'type' | 'data'> & { type: T; data: CardDataOf<T> };
+/** `Card` narrowed to one card type, with `data` narrowed accordingly. */
+export type CardOf<T extends CardType> = Omit<Card, 'type' | 'data'> & { type: T; data: CardDataOf<T> };
