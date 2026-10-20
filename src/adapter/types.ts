@@ -101,6 +101,8 @@ export interface TonFunctionOptions {
 export interface UserFunctionOptions {
     /** Get user's id */
     readonly getUserId: () => Promise<string>;
+    /** Get privy id */
+    readonly getPrivyId: () => Promise<string>;
     /** Get user's token list */
     readonly getUserTokens: () => Promise<UserToken[]>;
     /** Add token to user's token list */
