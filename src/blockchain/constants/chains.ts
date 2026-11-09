@@ -60,7 +60,9 @@ export enum Chain {
     /** ARC blockchain */
     ARC = 'arc',
     /** INK blockchain */
-    INK = 'ink'
+    INK = 'ink',
+    /** Elysium blockchain */
+    ELYSIUM = 'elysium'
 }
 
 /**

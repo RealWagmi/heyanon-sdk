@@ -101,4 +101,6 @@ export const WETH9 = {
     [Chain.INK]: new Token(ChainIds[Chain.INK], '0x4200000000000000000000000000000000000006', 18, 'WETH', 'Wrapped Ether'),
     /** USDC (USDC) on ARC (0x3600000000000000000000000000000000000000)*/
     [Chain.ARC]: new Token(ChainIds[Chain.ARC], zeroAddress, 18, 'USDC', 'USDC'),
+    /** Wrapped HYPE (WHYPE) on Elysium */
+    [Chain.ELYSIUM]: new Token(ChainIds[Chain.ELYSIUM], '0xbA876237B0F021A6c6D852d6c26E107997cC5E81', 18, 'WHYPE', 'Wrapped HYPE'),
 } satisfies Record<EvmChain, Token>;

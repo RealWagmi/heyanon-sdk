@@ -75,5 +75,7 @@ export const ChainIds = {
     /** ARC - Chain ID: 5042 */
     [Chain.ARC]: 5042,
     /** INK - Chain ID: 57073 */
-    [Chain.INK]: 57073
+    [Chain.INK]: 57073,
+    /** Elysium - Chain ID: 99901 */
+    [Chain.ELYSIUM]: 99901
 } satisfies Record<EvmChain, number>;
